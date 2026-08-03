@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local source material — originals the site is built FROM, not files it serves.
+# Everything the site actually needs already lives under public/. Keeping these
+# out saves ~55MB per clone. Delete a line here if you want it version-controlled.
+/media-kit/
+*.mp4

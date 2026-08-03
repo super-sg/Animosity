@@ -1,26 +1,175 @@
 @import "tailwindcss";
 
+/* ==================================================================
+   ANIMOSITY — design tokens
+   Palette lifted from the Media Kit 2026: near-black ground, blood
+   red primary, member accents (green / orange / blue / violet), and
+   the bone-white used for all display type.
+   ================================================================== */
+
+@theme {
+  /* ground */
+  --color-void: #050505;
+  --color-ink: #0b0b0c;
+  --color-carbon: #141416;
+  --color-ash: #1e1e21;
+  --color-smoke: #2a2a2e;
+
+  /* type */
+  --color-bone: #f2f0ee;
+  --color-dust: #a3a09c;
+  --color-grave: #6b6864;
+
+  /* brand */
+  --color-blood: #e11d2e;
+  --color-blood-bright: #ff2d40;
+  --color-blood-deep: #8f0f1c;
+
+  /* member accents */
+  --color-venom: #22c55e;
+  --color-ember: #f97316;
+  --color-amber: #f59e0b;
+  --color-cobalt: #3b82f6;
+  --color-violet: #8b5cf6;
+  --color-rose: #f43f5e;
+
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ------------------------------------------------------------------ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  --nav-h: 72px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  min-width: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-void);
+  /* Lenis drives scrolling; native smooth-scroll would fight it. */
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-void);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-blood);
+  color: var(--color-bone);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilities                                                           */
+/* ------------------------------------------------------------------ */
+
+@utility display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.82;
+  letter-spacing: -0.015em;
+}
+
+/* Small uppercase label — the media kit's technical-rider voice */
+@utility label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+}
+
+/* Fine hairline used to separate blocks, like the rider table */
+@utility rule {
+  border-color: color-mix(in srgb, var(--color-bone) 12%, transparent);
+}
+
+@utility edge-x {
+  padding-inline: clamp(1.25rem, 5vw, 5rem);
+}
+
+/* Film grain + halftone dot field from the media kit's grunge layer */
+@utility grain {
+  position: relative;
+  isolation: isolate;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@utility dotfield {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-bone) 22%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 14px 14px;
+}
+
+@utility crossfield {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-bone) 30%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-bone) 30%, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(circle at center, #000 1.5px, transparent 1.6px);
+  mask-size: 26px 26px;
+}
+
+/* Wordmark treatment: white glyphs carrying the violet neon bleed off the
+   media kit cover — tight core, soft violet halo, wide red spill. */
+@utility logo-glow {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-violet) 85%, transparent))
+    drop-shadow(0 0 20px color-mix(in srgb, var(--color-violet) 50%, transparent))
+    drop-shadow(0 0 64px color-mix(in srgb, var(--color-blood) 32%, transparent));
+}
+
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus ring that survives the dark ground */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-blood-bright);
+  outline-offset: 3px;
+  border-radius: 2px;
 }

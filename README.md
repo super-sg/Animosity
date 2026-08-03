@@ -9,121 +9,134 @@ npm run build   # production build
 npm run lint
 ```
 
+## Routes
+
+| Route | What's on it |
+|---|---|
+| `/` | Clickable band line-up, manifesto, the three originals, video, booking |
+| `/history` | Six chapters with a sticky chapter rail, the competition record, the originals |
+| `/members` | All eight, plus origins and the stage plot |
+| `/members/[slug]` | One page per member — statically generated, eight of them |
+
+Nav lives in the root layout, so it's shared across every route. Links to sections on
+the landing page use `/#music` form so they work from any route.
+
 ## Editing content
 
 **Almost everything lives in one file: [`src/data/band.ts`](src/data/band.ts).**
-Change it there and the whole site follows — no component edits needed.
+Change it there and every route follows — no component edits needed.
 
-| What | Export | Notes |
-|---|---|---|
-| Name, genre, email, socials, manifesto | `BAND` | |
-| The three originals + their stories | `SONGS` | see below |
-| Battle of Bands results | `ACHIEVEMENTS` | auto-splits into 1st / 2nd groups |
-| Headline numbers | `STATS` | |
-| The eight members | `MEMBERS` | each has its own `accent` colour |
-| History chapters | `HISTORY` | see below |
-| Technical rider | `RIDER` | |
-| Nav links | `NAV` | |
+| What | Export |
+|---|---|
+| Name, genre, email, socials, manifesto | `BAND` |
+| The three originals + stories + who played on them | `SONGS` |
+| Battle of Bands results | `ACHIEVEMENTS` |
+| The eight members — bio, gear, contributions, facts, accent colour | `MEMBERS` |
+| History chapters + which members enter in each | `HISTORY` |
+| Technical rider | `RIDER` |
+| Nav links | `NAV` |
 
-### ⚠️ Placeholder copy to replace
+Adding a member to `MEMBERS` automatically creates their page, adds them to the
+line-up, the grid, the origins list and the prev/next rings.
 
-Three things were written from the media kit rather than supplied by the band, and are
-flagged in the UI with an amber note so nobody ships them by accident:
+### ⚠️ Still needs the band
 
-1. **Song stories** — `SONGS[].story`. Replace with the band's own account of each track,
-   then set `isPlaceholderStory: false` to remove the warning.
-2. **History chapters** — `HISTORY[].body` and `.title`. Real dates and beats need
-   confirming. Set `isPlaceholder: false` once they're right.
-3. **Song title spelling** — the media kit spells the third track *"Casualty of War"*; the
-   site uses **"Kezualty of War"** as supplied. Pick one and make it consistent.
-
-`Mental Distortion` and `Kezualty of War` have no video yet. Add a `youtubeId` to either
-entry in `SONGS` and a play link appears automatically.
-
-## Design language
-
-Taken from the Media Kit 2026 rather than invented:
-
-- **Ground** near-black `#050505`, **primary** blood red `#E11D2E`, type in bone `#F2F0EE`.
-- **Per-member accents** — red, green, orange, blue, violet — pulled from each member's
-  page in the kit. They drive the member cards, detail sheets and song rows.
-- **Type** — Anton for display (the kit's heavy condensed headers), Archivo for body,
-  JetBrains Mono for the small technical labels that echo the rider table.
-- **Texture** — film grain, halftone dot fields and hairline rules, standing in for the
-  kit's grunge and cross-hatch layers.
-
-Tokens are defined in [`src/app/globals.css`](src/app/globals.css) under `@theme`.
+1. **Arnold and Aditya have no photos.** Their folders in `band members pics/` were
+   empty, so both still use the lower-quality stills pulled out of the media kit PDF.
+   Drop photos in and re-run the cutout step below.
+2. **Song stories** — `SONGS[].story` is written from the media kit, not by the band.
+   Flagged in amber in the UI. Set `isPlaceholderStory: false` once replaced.
+3. **History chapters** — `HISTORY[].body`. The people and results are real; the
+   ordering and framing are not confirmed, and there are no dates anywhere in the kit.
+   Flagged in amber. Set `isPlaceholder: false` once confirmed.
+4. **Song title spelling** — the kit says *"Casualty of War"*, the site says
+   **"Kezualty of War"** as supplied. Pick one.
 
 ## Assets
 
-| Path | Source |
+| Path | What |
 |---|---|
-| `public/video/hero-backdrop.mp4` | the band's own stage LED backdrop — see below |
-| `public/photos/*.jpg` | extracted from the media kit PDF; colour grading is done in CSS, not baked in |
-| `public/brand/animosity-logo-glyph.png` | wordmark with the sticker outline stripped, so the neon glow traces the letterforms |
-| `public/brand/animosity-logo-white.png` | wordmark with its white sticker outline inverted (alternative treatment) |
-| `public/media-kit/…pdf` | the full kit, linked from the booking section |
-| `media-kit/` | untouched originals — not served, not committed |
+| `public/cutouts/*.png` | background-removed PNGs for the landing-page line-up |
+| `public/photos/<slug>.jpg` | member portraits |
+| `public/photos/band-*.jpg` | group and live shots |
+| `public/video/hero-backdrop.mp4` | the band's own stage LED backdrop |
+| `public/brand/animosity-logo-glyph.png` | wordmark, sticker outline stripped so the neon glow traces the letterforms |
+| `public/media-kit/…pdf` | the full kit, linked from booking |
+| `band members pics/`, `full band pics/`, `media-kit/` | originals — not served, not committed |
+
+### Regenerating the cut-outs
+
+The line-up needs transparent PNGs. Higgsfield's `remove_background` was the plan but
+the account has no credits, so this uses [rembg](https://github.com/danielgatis/rembg)
+locally with the `u2net_human_seg` model — free, offline, repeatable.
+
+```bash
+python3 -m venv /tmp/rembg-venv
+/tmp/rembg-venv/bin/pip install "rembg[cpu]" pillow
+/tmp/rembg-venv/bin/python - <<'PY'
+from rembg import remove, new_session
+from PIL import Image
+session = new_session("u2net_human_seg")
+im = Image.open("SOURCE.jpeg").convert("RGBA")
+out = remove(im, session=session, alpha_matting=True,
+             alpha_matting_foreground_threshold=250,
+             alpha_matting_background_threshold=15,
+             alpha_matting_erode_size=8)
+out.crop(out.getbbox()).save("public/cutouts/SLUG.png")
+PY
+```
+
+Pick **full-body, standing, front-on** shots where the subject is clear of other
+people. Drummers are the hard case — a shot from behind the kit keeps chunks of snare
+in the cutout; a clear upper-body shot works far better.
 
 ### The hero video
 
-Encoded from `Animosity Backdrop Normal 16_9 .mp4` (the stage visual). Three things
-were done to it, and they matter if you ever re-cut it:
-
-1. **The top 270px are cropped off.** The source has the wordmark burned into its top
-   third, which would ghost behind the real logo. Cropping leaves the eyes along the top
-   edge of the frame — that's why the hero's parallax starts at `scale: 1` rather than
-   zoomed in, so they aren't clipped at rest.
-2. **The audio track is stripped.** It's dead weight on a muted background loop and some
-   browsers are fussier about autoplaying video that carries one.
-3. **H.264 only, crf 32, 24fps, faststart.** 13MB → 974KB with no visible loss once
-   darkened. VP9/WebM was tried and came out *larger* on this grainy source, so there's
-   no webm to keep in sync.
-
-To regenerate after editing the source:
+Encoded from the stage visual. The source has the wordmark burned into its top third,
+which ghosted behind the real logo, so **the top 270px are cropped off**. The eyes then
+sit along the top edge of the frame — which is why the parallax starts at `scale: 1`
+rather than zoomed in. Audio stripped, H.264 crf 32, 24fps, faststart: 13MB → 974KB.
+VP9 came out larger on this grainy source, so there's no webm.
 
 ```bash
 ffmpeg -i "source.mp4" -an -r 24 -vf "crop=1280:450:0:270" \
   -c:v libx264 -crf 32 -preset veryslow -pix_fmt yuv420p \
   -movflags +faststart public/video/hero-backdrop.mp4
-ffmpeg -i public/video/hero-backdrop.mp4 -frames:v 1 -q:v 3 public/video/hero-poster.jpg
 ```
-
-The poster is the video's own first frame, so there's no jump when playback starts. An
-`IntersectionObserver` in [`Hero.tsx`](src/components/Hero.tsx) pauses decoding once the
-hero scrolls out of view, and `prefers-reduced-motion` holds it on the poster.
 
 ### The media kit PDF
 
-The original is 38MB — too big to hand a promoter on mobile. The served copy is
-rasterised at 150dpi and rebuilt as JPEG-backed pages: **38MB → 4MB**, text still crisp
-at screen size. The trade-off is that its text is no longer selectable or searchable.
-The original is untouched in `media-kit/` if you need it. To redo:
+The original is 38MB. The served copy is rasterised at 150dpi and rebuilt as
+JPEG-backed pages: **38MB → 4MB**, text still crisp on screen. Trade-off: its text is
+no longer selectable. Original untouched in `media-kit/`.
+
+## Design language
+
+From the Media Kit 2026 rather than invented: near-black `#050505`, blood red
+`#E11D2E`, bone `#F2F0EE`, and per-member accent colours taken from each member's page
+in the kit — they drive the line-up wash, member cards, detail pages and song rows.
+Anton for display, Archivo for body, JetBrains Mono for the technical labels that echo
+the rider table. Tokens in [`globals.css`](src/app/globals.css) under `@theme`.
+
+## Gotcha: stale images in dev
+
+Next 16 caches optimised images at **`.next/dev/cache/images`** — *not*
+`.next/cache/images`. It keys on the request URL, so replacing a file at the same path
+leaves the old one being served, and it serves different formats to different clients
+(WebP to browsers, JPEG to curl), so curl can look correct while the browser is stale.
+If a swapped image doesn't update:
 
 ```bash
-pdftoppm -r 150 -jpeg -jpegopt quality=82 "media-kit/<original>.pdf" /tmp/pg
-# then combine /tmp/pg-*.jpg into a PDF (PIL: Image.save(..., save_all=True))
+rm -rf .next && npm run dev
 ```
-
-## Motion
-
-Lenis drives inertial scrolling ([`SmoothScroll.tsx`](src/components/SmoothScroll.tsx));
-anchor links are routed through it so they ease rather than snap. Shared entrance
-animations live in [`motion-primitives.tsx`](src/components/motion-primitives.tsx).
-
-The history timeline is a pinned section that travels horizontally as you scroll
-([`History.tsx`](src/components/History.tsx)). Below `lg`, or when the visitor asks for
-reduced motion, it falls back to a plain vertical stack.
-
-`prefers-reduced-motion` disables Lenis and collapses transitions throughout.
 
 ## Deploying
 
-Fully static — no server needed at runtime.
+Fully static.
 
 ```bash
 npx vercel        # or: npm run build && npm start
 ```
 
-Set the real domain in `metadataBase` in [`src/app/layout.tsx`](src/app/layout.tsx)
+Set the real domain in `metadataBase` in [`layout.tsx`](src/app/layout.tsx)
 (currently `https://animosity.band`) so Open Graph images resolve.

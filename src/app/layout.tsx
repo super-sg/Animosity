@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Anton, Archivo, JetBrains_Mono } from "next/font/google";
 import { BAND } from "@/data/band";
 import SmoothScroll from "@/components/SmoothScroll";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const anton = Anton({
@@ -45,14 +47,14 @@ export const metadata: Metadata = {
       "Angst. Rebellion. A higher cause. Hard rock and metal out of Delhi-NCR.",
     url: "/",
     siteName: "Animosity",
-    images: [{ url: "/photos/hero-stage.jpg", width: 1693, height: 1059 }],
+    images: [{ url: "/photos/band-live.jpg", width: 1693, height: 1059 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Animosity — Hard Rock / Metal Band",
     description: "Angst. Rebellion. A higher cause.",
-    images: ["/photos/hero-stage.jpg"],
+    images: ["/photos/band-live.jpg"],
   },
   alternates: { canonical: "/" },
 };
@@ -85,7 +87,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <SmoothScroll />
-        {children}
+        <Nav />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );

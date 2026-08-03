@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { BAND, NAV } from "@/data/band";
@@ -8,13 +10,16 @@ import { BAND, NAV } from "@/data/band";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function Nav() {
+  const pathname = usePathname();
   const { scrollY } = useScroll();
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (v) => setSolid(v > 40));
 
-  // Lock the page while the mobile drawer is open.
+  // Only the landing page has a full-bleed hero to sit transparently over.
+  const overHero = pathname === "/";
+
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -28,6 +33,9 @@ export default function Nav() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  const isActive = (href: string) =>
+    href.startsWith("/#") ? false : pathname.startsWith(href);
+
   return (
     <>
       <motion.header
@@ -38,14 +46,14 @@ export default function Nav() {
       >
         <div
           className={`absolute inset-0 -z-10 transition-all duration-500 ${
-            solid
-              ? "border-b border-bone/10 bg-void/80 backdrop-blur-xl"
+            solid || !overHero
+              ? "border-b border-bone/10 bg-void/85 backdrop-blur-xl"
               : "border-b border-transparent bg-transparent"
           }`}
         />
 
         <nav className="edge-x flex h-full items-center justify-between gap-6">
-          <a href="#top" aria-label="Animosity — home" className="relative block shrink-0">
+          <Link href="/" aria-label="Animosity — home" className="relative block shrink-0">
             <Image
               src="/brand/animosity-logo-glyph.png"
               alt="Animosity"
@@ -54,17 +62,25 @@ export default function Nav() {
               priority
               className="h-6 w-auto sm:h-7"
             />
-          </a>
+          </Link>
 
           <ul className="hidden items-center gap-9 lg:flex">
             {NAV.map((item) => (
               <li key={item.href}>
-                <a href={item.href} className="group relative block py-2">
-                  <span className="label text-dust transition-colors duration-300 group-hover:text-bone">
+                <Link href={item.href} className="group relative block py-2">
+                  <span
+                    className={`label transition-colors duration-300 group-hover:text-bone ${
+                      isActive(item.href) ? "text-bone" : "text-dust"
+                    }`}
+                  >
                     {item.label}
                   </span>
-                  <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-blood transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-x-100" />
-                </a>
+                  <span
+                    className={`absolute inset-x-0 -bottom-0.5 h-px origin-left bg-blood transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-x-100 ${
+                      isActive(item.href) ? "scale-x-100" : "scale-x-0"
+                    }`}
+                  />
+                </Link>
               </li>
             ))}
           </ul>
@@ -114,17 +130,20 @@ export default function Nav() {
             <ul className="edge-x relative space-y-2">
               {NAV.map((item, i) => (
                 <li key={item.href} className="overflow-hidden">
-                  <motion.a
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="display block py-2 text-[clamp(2.75rem,13vw,5rem)] text-bone transition-colors hover:text-blood"
+                  <motion.div
                     initial={{ y: "110%" }}
                     animate={{ y: "0%" }}
                     exit={{ y: "110%" }}
                     transition={{ duration: 0.75, delay: 0.12 + i * 0.06, ease: EASE }}
                   >
-                    {item.label}
-                  </motion.a>
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className="display block py-2 text-[clamp(2.75rem,13vw,5rem)] text-bone transition-colors hover:text-blood"
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
                 </li>
               ))}
             </ul>

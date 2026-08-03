@@ -45,3 +45,5 @@ next-env.d.ts
 # out saves ~55MB per clone. Delete a line here if you want it version-controlled.
 /media-kit/
 /*.mp4
+/band members pics/
+/full band pics/

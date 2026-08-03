@@ -44,4 +44,4 @@ next-env.d.ts
 # Everything the site actually needs already lives under public/. Keeping these
 # out saves ~55MB per clone. Delete a line here if you want it version-controlled.
 /media-kit/
-*.mp4
+/*.mp4

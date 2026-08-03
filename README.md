@@ -58,15 +58,52 @@ Tokens are defined in [`src/app/globals.css`](src/app/globals.css) under `@theme
 
 | Path | Source |
 |---|---|
+| `public/video/hero-backdrop.mp4` | the band's own stage LED backdrop — see below |
 | `public/photos/*.jpg` | extracted from the media kit PDF; colour grading is done in CSS, not baked in |
 | `public/brand/animosity-logo-glyph.png` | wordmark with the sticker outline stripped, so the neon glow traces the letterforms |
 | `public/brand/animosity-logo-white.png` | wordmark with its white sticker outline inverted (alternative treatment) |
 | `public/media-kit/…pdf` | the full kit, linked from the booking section |
-| `media-kit/` | untouched originals — not served |
+| `media-kit/` | untouched originals — not served, not committed |
 
-The hero photo has the band's wordmark on the stage backdrop behind them. A radial scrim
-in [`Hero.tsx`](src/components/Hero.tsx) sinks that patch into the dark so it doesn't
-ghost behind the real logo. If you swap the hero photo, that scrim can probably go.
+### The hero video
+
+Encoded from `Animosity Backdrop Normal 16_9 .mp4` (the stage visual). Three things
+were done to it, and they matter if you ever re-cut it:
+
+1. **The top 270px are cropped off.** The source has the wordmark burned into its top
+   third, which would ghost behind the real logo. Cropping leaves the eyes along the top
+   edge of the frame — that's why the hero's parallax starts at `scale: 1` rather than
+   zoomed in, so they aren't clipped at rest.
+2. **The audio track is stripped.** It's dead weight on a muted background loop and some
+   browsers are fussier about autoplaying video that carries one.
+3. **H.264 only, crf 32, 24fps, faststart.** 13MB → 974KB with no visible loss once
+   darkened. VP9/WebM was tried and came out *larger* on this grainy source, so there's
+   no webm to keep in sync.
+
+To regenerate after editing the source:
+
+```bash
+ffmpeg -i "source.mp4" -an -r 24 -vf "crop=1280:450:0:270" \
+  -c:v libx264 -crf 32 -preset veryslow -pix_fmt yuv420p \
+  -movflags +faststart public/video/hero-backdrop.mp4
+ffmpeg -i public/video/hero-backdrop.mp4 -frames:v 1 -q:v 3 public/video/hero-poster.jpg
+```
+
+The poster is the video's own first frame, so there's no jump when playback starts. An
+`IntersectionObserver` in [`Hero.tsx`](src/components/Hero.tsx) pauses decoding once the
+hero scrolls out of view, and `prefers-reduced-motion` holds it on the poster.
+
+### The media kit PDF
+
+The original is 38MB — too big to hand a promoter on mobile. The served copy is
+rasterised at 150dpi and rebuilt as JPEG-backed pages: **38MB → 4MB**, text still crisp
+at screen size. The trade-off is that its text is no longer selectable or searchable.
+The original is untouched in `media-kit/` if you need it. To redo:
+
+```bash
+pdftoppm -r 150 -jpeg -jpegopt quality=82 "media-kit/<original>.pdf" /tmp/pg
+# then combine /tmp/pg-*.jpg into a PDF (PIL: Image.save(..., save_all=True))
+```
 
 ## Motion
 

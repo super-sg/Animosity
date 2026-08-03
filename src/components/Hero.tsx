@@ -1,22 +1,50 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { BAND } from "@/data/band";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
-  // Photo drifts slower than the page; type lifts and fades out ahead of it.
-  const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
-  const photoScale = useTransform(scrollYProgress, [0, 1], [1.08, 1.22]);
+  // Hold on the poster frame for anyone who asked for less motion, and stop
+  // decoding entirely once the hero is scrolled past.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (reduced) {
+      video.pause();
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) void video.play().catch(() => {});
+        else video.pause();
+      },
+      { threshold: 0.05 },
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [reduced]);
+
+  // Footage drifts slower than the page; type lifts and fades out ahead of it.
+  // Start at 1 so the full cropped frame — including the eyes along its top
+  // edge — is intact at rest, then creep in as the hero scrolls away.
+  const videoY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.14]);
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-38%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.62], [1, 0]);
 
@@ -26,31 +54,31 @@ export default function Hero() {
       id="top"
       className="relative flex h-[100svh] min-h-[620px] flex-col justify-end overflow-hidden"
     >
-      {/* Stage photograph */}
+      {/* The band's own stage backdrop, looping */}
       <motion.div
         className="absolute inset-0 -z-20"
-        style={{ y: photoY, scale: photoScale }}
+        style={{ y: videoY, scale: videoScale }}
       >
-        <Image
-          src="/photos/hero-stage.jpg"
-          alt="Animosity performing live"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
+        <video
+          ref={videoRef}
+          className="h-full w-full object-cover object-center"
+          src="/video/hero-backdrop.mp4"
+          poster="/video/hero-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden
         />
       </motion.div>
 
-      {/* Grade: crush the photo toward the kit's blood-red cover */}
-      <div className="absolute inset-0 -z-10 bg-blood/22 mix-blend-color" />
-
-      {/* The stage backdrop in this photo already carries the wordmark. Sink
-          that patch into the dark so it doesn't ghost behind the real logo,
-          while the players either side of it stay lit. */}
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_58%_34%_at_50%_30%,var(--color-void)_0%,var(--color-void)_42%,transparent_80%)]" />
-
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-void via-void/50 to-void/65" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_45%,transparent_35%,var(--color-void)_96%)]" />
+      {/* Grade: crush the footage toward the kit's blood-red cover. The source
+          had the wordmark burned into its top third — that band is cropped out
+          of the encode, so nothing here has to hide it. */}
+      <div className="absolute inset-0 -z-10 bg-blood/15 mix-blend-color" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-void via-void/35 to-void/45" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_40%,transparent_34%,var(--color-void)_96%)]" />
 
       <motion.div
         className="edge-x relative w-full pb-14 sm:pb-20"

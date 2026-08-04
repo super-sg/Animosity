@@ -122,21 +122,35 @@ lineup: { scale: 1.02, drop: 0.025, aspect: 0.5347 }
 | `drop` | vertical nudge as a fraction of the base height, applied after scaling, so the **heads line up**. Negative moves up. |
 | `aspect` | the PNG's width ÷ height. Sets the slot width so nothing is squashed. Just read it off the file. |
 
-To re-measure after swapping a photo, render everyone at equal height and compare head
-sizes by eye — that's what the numbers were derived from:
+**`drop` is derived, not guessed.** Because the cut-outs are cropped to their bounding
+box, the top of the image *is* the top of the head, so head-tops line up exactly when
 
-```bash
-# all figures at one height, ruler overlaid; measure head top → chin for each
-python3 /tmp/preview2.py     # see git history for the script
+```
+drop = scale − K        (K ≈ 0.99 for the current set)
 ```
 
-`scale = (median head height) ÷ (this member's head height)`. Then set `drop` so their
-head top sits level with everyone else's. The bottom 20% of each figure is masked to a
-fade, so mismatched crops dissolve into the dark instead of ending on a hard cut.
+Keep that relationship when you change a `scale`, or the heads drift apart.
 
-The row is `SUM(scale × aspect)` ≈ 3.64 figures wide, which is why `--fig` in
-`HeroLineup.tsx` is capped by viewport width as well as height — otherwise the end
-members fall off screen. Adjust the divisor if you add or remove a member.
+To re-measure after swapping a photo: render everyone at equal height side by side and
+compare heads by eye, then `scale = (median head height) ÷ (this member's head height)`.
+
+Two things that will mislead you if you measure carelessly — both of which produced a
+visibly wrong first pass:
+
+- **Hair is not head.** Riyan's hair covers his face; measuring the hair mass made his
+  "head" look enormous and shrank him to 73%, well below everyone else.
+- **Leaning toward camera enlarges the head.** Arnold is bent double screaming into the
+  mic, so perspective inflates his head relative to a standing shot. Same result.
+
+Automated approaches were tried and are not worth repeating: OpenCV Haar cascades fire
+constantly on stage lighting (Arnold's best "face" box landed on his shoulder), and
+finding the shoulder line from the alpha mask breaks on raised arms and big hair. Eyes
+on a side-by-side render is the reliable method here.
+
+The bottom 20% of each figure is masked to a fade so mismatched crops dissolve into the
+dark instead of ending on a hard cut. `--fig` is capped by viewport width as well as
+height, using `ROW_UNITS` computed from the data in `HeroLineup.tsx` — so adding a
+member or swapping in a wider photo can't silently push the end of the row off screen.
 
 ### The hero video
 

@@ -9,6 +9,19 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+/** How much of a neighbour each figure overlaps, as a fraction of --fig. */
+const LAP = 0.05;
+
+/**
+ * Width of the whole row, in multiples of --fig. Each figure is
+ * `--fig × scale` tall and `--fig × scale × aspect` wide, less the overlaps.
+ * Derived rather than hardcoded so adding a member or swapping a photo for a
+ * wider one can't silently push the end of the line-up off screen.
+ */
+const ROW_UNITS =
+  MEMBERS.reduce((n, m) => n + m.lineup.scale * m.lineup.aspect, 0) -
+  LAP * (MEMBERS.length - 1);
+
 export default function HeroLineup() {
   const ref = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -120,8 +133,16 @@ export default function HeroLineup() {
           by width as well as height to keep all eight on screen. Below lg the
           row scrolls sideways instead. */}
       <motion.div
-        className="relative z-10 mt-auto flex min-h-0 flex-1 items-end [--fig:36svh] [--lap:0px] sm:[--fig:42svh] lg:[--fig:min(52svh,calc((100vw-4rem)/3.45))] lg:[--lap:calc(var(--fig)*-0.05)]"
-        style={{ y: lineupY, opacity: fade }}
+        className="relative z-10 mt-auto flex min-h-0 flex-1 items-end [--fig:36svh] [--lap:0px] sm:[--fig:42svh] lg:[--fig:min(52svh,var(--fig-w))] lg:[--lap:calc(var(--fig)*-0.05)]"
+        style={{
+          y: lineupY,
+          opacity: fade,
+          // width-derived cap on --fig; the class above picks whichever of this
+          // and the height cap is smaller
+          ...({
+            "--fig-w": `calc((100vw - 4.5rem) / ${ROW_UNITS.toFixed(3)})`,
+          } as React.CSSProperties),
+        }}
       >
         {/* floor shadow so the cut-outs separate from the busy backdrop */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-void via-void/70 to-transparent" />

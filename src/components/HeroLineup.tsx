@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
-import { BAND, MEMBERS } from "@/data/band";
+import { BAND, LINEUP } from "@/data/band";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -19,8 +19,8 @@ const LAP = 0.05;
  * wider one can't silently push the end of the line-up off screen.
  */
 const ROW_UNITS =
-  MEMBERS.reduce((n, m) => n + m.lineup.scale * m.lineup.aspect, 0) -
-  LAP * (MEMBERS.length - 1);
+  LINEUP.reduce((n, m) => n + m.lineup.scale * m.lineup.aspect, 0) -
+  LAP * (LINEUP.length - 1);
 
 export default function HeroLineup() {
   const ref = useRef<HTMLElement>(null);
@@ -55,7 +55,7 @@ export default function HeroLineup() {
     return () => observer.disconnect();
   }, [reduced]);
 
-  const active = MEMBERS.find((m) => m.slug === hovered);
+  const active = LINEUP.find((m) => m.slug === hovered);
 
   return (
     <section
@@ -151,8 +151,8 @@ export default function HeroLineup() {
           className="relative flex w-full snap-x snap-mandatory items-end gap-1 lg:gap-0 overflow-x-auto overflow-y-hidden px-3 lg:justify-center lg:overflow-visible lg:px-6"
           onMouseLeave={() => setHovered(null)}
         >
-          {MEMBERS.map((member, i) => {
-            const { scale, drop, aspect } = member.lineup;
+          {LINEUP.map((member, i) => {
+            const { scale, drop, aspect, nudge = 0 } = member.lineup;
             const dimmed = hovered !== null && hovered !== member.slug;
             const lit = hovered === member.slug;
 
@@ -165,7 +165,7 @@ export default function HeroLineup() {
                 // that member clear of their neighbours
                 style={{
                   marginLeft: i === 0 ? undefined : "var(--lap)",
-                  zIndex: lit ? 20 : MEMBERS.length - i,
+                  zIndex: lit ? 20 : LINEUP.length - i,
                 }}
                 initial={{ opacity: 0, y: 60 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -197,7 +197,7 @@ export default function HeroLineup() {
                       }`}
                       style={{
                         height: `calc(var(--fig) * ${scale})`,
-                        transform: `translateY(calc(var(--fig) * ${drop} + ${lit ? "-0.75rem" : "0px"}))`,
+                        transform: `translate(calc(var(--fig) * ${nudge}), calc(var(--fig) * ${drop} + ${lit ? "-0.75rem" : "0px"}))`,
                         // dissolve the bottom edge so the varied crops don't
                         // all end on a hard horizontal cut
                         maskImage:

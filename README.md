@@ -121,6 +121,20 @@ lineup: { scale: 1.02, drop: 0.025, aspect: 0.5347 }
 | `scale` | height multiplier that makes everyone's **head the same size**. Bigger = drawn larger. A tight crop needs a *smaller* scale. |
 | `drop` | vertical nudge as a fraction of the base height, applied after scaling, so the **heads line up**. Negative moves up. |
 | `aspect` | the PNG's width ÷ height. Sets the slot width so nothing is squashed. Just read it off the file. |
+| `nudge` | optional horizontal shift, same units. For subjects who sit off-centre inside their own cut-out — Arnold is bent forward with his legs sprawling left, which put his mass at 42% across and made him crowd Harsh. |
+
+### Two different orders
+
+The landing-page line-up is **not** in the same order as everything else:
+
+- **`LINEUP_ORDER`** — left-to-right on the landing page only, roughly where they'd
+  stand on a stage.
+- **`MEMBERS`** — the canonical order used everywhere else: the members grid, the
+  origins list, the `01 of 08` counters and the prev/next rings.
+
+Only `HeroLineup.tsx` imports `LINEUP`. If you add a member to `MEMBERS`, add their slug
+to `LINEUP_ORDER` too — it throws at build time on an unknown slug, but it won't notice
+one you left out.
 
 **`drop` is derived, not guessed.** Because the cut-outs are cropped to their bounding
 box, the top of the image *is* the top of the head, so head-tops line up exactly when

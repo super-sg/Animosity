@@ -220,7 +220,7 @@ export const MEMBERS: Member[] = [
     accent: "#F97316",
     photo: "/photos/partho-roy.jpg",
     cutout: "/cutouts/partho-roy.png",
-    lineup: { scale: 1.18, drop: 0.18, aspect: 0.7287, bodyW: 0.389, headCx: 0.423 },
+    lineup: { scale: 1.18, drop: 0.18, aspect: 0.7287, bodyW: 0.389, headCx: 0.423, nudge: 0.075 },
     gallery: [
       "/photos/gallery/partho-roy/01.jpg",
       "/photos/gallery/partho-roy/02.jpg",

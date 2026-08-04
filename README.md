@@ -90,6 +90,39 @@ Pick **full-body, standing, front-on** shots where the subject is clear of other
 people. Drummers are the hard case — a shot from behind the kit keeps chunks of snare
 in the cutout; a clear upper-body shot works far better.
 
+### Line-up proportions — read this before swapping a photo
+
+The cut-outs are framed inconsistently: some are full-body, some are waist-up. If you
+just scale them all to one box height, a waist-up crop renders the same height as a
+full-body shot and the person looks like a giant. So each member carries a `lineup`
+block in `MEMBERS`:
+
+```ts
+lineup: { scale: 1.02, drop: 0.025, aspect: 0.5347 }
+```
+
+| Field | Meaning |
+|---|---|
+| `scale` | height multiplier that makes everyone's **head the same size**. Bigger = drawn larger. A tight crop needs a *smaller* scale. |
+| `drop` | vertical nudge as a fraction of the base height, applied after scaling, so the **heads line up**. Negative moves up. |
+| `aspect` | the PNG's width ÷ height. Sets the slot width so nothing is squashed. Just read it off the file. |
+
+To re-measure after swapping a photo, render everyone at equal height and compare head
+sizes by eye — that's what the numbers were derived from:
+
+```bash
+# all figures at one height, ruler overlaid; measure head top → chin for each
+python3 /tmp/preview2.py     # see git history for the script
+```
+
+`scale = (median head height) ÷ (this member's head height)`. Then set `drop` so their
+head top sits level with everyone else's. The bottom 20% of each figure is masked to a
+fade, so mismatched crops dissolve into the dark instead of ending on a hard cut.
+
+The row is `SUM(scale × aspect)` ≈ 3.64 figures wide, which is why `--fig` in
+`HeroLineup.tsx` is capped by viewport width as well as height — otherwise the end
+members fall off screen. Adjust the divisor if you add or remove a member.
+
 ### The hero video
 
 Encoded from the stage visual. The source has the wordmark burned into its top third,

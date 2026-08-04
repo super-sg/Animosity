@@ -114,76 +114,104 @@ export default function HeroLineup() {
         </h1>
       </motion.div>
 
-      {/* The line-up */}
+      {/* The line-up.
+          `--fig` is the height a member with scale 1 is drawn at. The row is
+          SUM(scale × aspect) ≈ 3.64 figures wide, so on desktop --fig is capped
+          by width as well as height to keep all eight on screen. Below lg the
+          row scrolls sideways instead. */}
       <motion.div
-        className="relative z-10 mt-auto flex min-h-0 flex-1 items-end"
+        className="relative z-10 mt-auto flex min-h-0 flex-1 items-end [--fig:36svh] [--lap:0px] sm:[--fig:42svh] lg:[--fig:min(52svh,calc((100vw-4rem)/3.45))] lg:[--lap:calc(var(--fig)*-0.05)]"
         style={{ y: lineupY, opacity: fade }}
       >
         {/* floor shadow so the cut-outs separate from the busy backdrop */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-void via-void/70 to-transparent" />
 
         <div
-          className="relative flex w-full snap-x snap-mandatory items-end gap-0.5 overflow-x-auto overflow-y-hidden px-3 pb-0 sm:gap-1 lg:justify-center lg:overflow-visible lg:px-6"
+          className="relative flex w-full snap-x snap-mandatory items-end gap-1 lg:gap-0 overflow-x-auto overflow-y-hidden px-3 lg:justify-center lg:overflow-visible lg:px-6"
           onMouseLeave={() => setHovered(null)}
         >
-          {MEMBERS.map((member, i) => (
-            <motion.div
-              key={member.slug}
-              className="relative shrink-0 snap-center"
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.1, delay: 0.55 + i * 0.07, ease: EASE }}
-            >
-              <Link
-                href={`/members/${member.slug}`}
-                onMouseEnter={() => setHovered(member.slug)}
-                onFocus={() => setHovered(member.slug)}
-                onBlur={() => setHovered(null)}
-                className="group relative block"
-                aria-label={`${member.name} — ${member.role}`}
+          {MEMBERS.map((member, i) => {
+            const { scale, drop, aspect } = member.lineup;
+            const dimmed = hovered !== null && hovered !== member.slug;
+            const lit = hovered === member.slug;
+
+            return (
+              <motion.div
+                key={member.slug}
+                className="relative shrink-0 snap-center"
+                // slight shoulder-to-shoulder overlap, so they read as one
+                // group rather than eight separate cut-outs; hovering lifts
+                // that member clear of their neighbours
+                style={{
+                  marginLeft: i === 0 ? undefined : "var(--lap)",
+                  zIndex: lit ? 20 : MEMBERS.length - i,
+                }}
+                initial={{ opacity: 0, y: 60 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.1, delay: 0.55 + i * 0.07, ease: EASE }}
               >
-                {/* accent pool at their feet */}
-                <span
-                  className="pointer-events-none absolute inset-x-0 bottom-0 h-24 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
-                  style={{ background: member.accent }}
-                />
-
-                <div
-                  className={`relative h-[38svh] w-[36vw] transition-all duration-700 ease-[var(--ease-out-expo)] sm:h-[46svh] sm:w-[24vw] lg:h-[54svh] lg:w-[11.2vw] ${
-                    hovered && hovered !== member.slug
-                      ? "opacity-55"
-                      : "opacity-100"
-                  } ${hovered === member.slug ? "-translate-y-3" : ""}`}
+                <Link
+                  href={`/members/${member.slug}`}
+                  onMouseEnter={() => setHovered(member.slug)}
+                  onFocus={() => setHovered(member.slug)}
+                  onBlur={() => setHovered(null)}
+                  className="group relative flex flex-col items-center"
+                  aria-label={`${member.name} — ${member.role}`}
                 >
-                  <Image
-                    src={member.cutout ?? member.photo}
-                    alt={member.name}
-                    fill
-                    priority={i < 4}
-                    sizes="(max-width: 640px) 36vw, (max-width: 1024px) 24vw, 12vw"
-                    className={`object-contain object-bottom drop-shadow-[0_12px_28px_rgba(0,0,0,0.75)] transition-all duration-700 ease-[var(--ease-out-expo)] ${
-                      hovered === member.slug ? "grayscale-0" : "grayscale-[0.75]"
-                    }`}
-                  />
-                </div>
-
-                {/* name plate — sits below the figure, clear of their feet */}
-                <span className="pointer-events-none block px-1 pt-3 text-center">
+                  {/* Fixed-height slot keeps every name plate on one line, while
+                      the figure inside is sized and nudged individually. */}
                   <span
-                    className="label block truncate transition-colors duration-400"
-                    style={{
-                      color:
-                        hovered === member.slug
+                    className="relative block h-[var(--fig)]"
+                    style={{ width: `calc(var(--fig) * ${scale * aspect})` }}
+                  >
+                    {/* accent pool at their feet */}
+                    <span
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-24 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
+                      style={{ background: member.accent }}
+                    />
+
+                    <span
+                      className={`absolute inset-x-0 bottom-0 block transition-all duration-700 ease-[var(--ease-out-expo)] ${
+                        dimmed ? "opacity-55" : "opacity-100"
+                      }`}
+                      style={{
+                        height: `calc(var(--fig) * ${scale})`,
+                        transform: `translateY(calc(var(--fig) * ${drop} + ${lit ? "-0.75rem" : "0px"}))`,
+                        // dissolve the bottom edge so the varied crops don't
+                        // all end on a hard horizontal cut
+                        maskImage:
+                          "linear-gradient(to bottom, #000 80%, transparent 100%)",
+                      }}
+                    >
+                      <Image
+                        src={member.cutout ?? member.photo}
+                        alt={member.name}
+                        fill
+                        priority={i < 4}
+                        sizes="(max-width: 640px) 40vw, (max-width: 1024px) 26vw, 15vw"
+                        className={`object-contain object-bottom drop-shadow-[0_14px_30px_rgba(0,0,0,0.8)] transition-all duration-700 ease-[var(--ease-out-expo)] ${
+                          lit ? "grayscale-0" : "grayscale-[0.75]"
+                        }`}
+                      />
+                    </span>
+                  </span>
+
+                  <span className="pointer-events-none block w-full px-1 pt-3 text-center">
+                    <span
+                      className="label block truncate transition-colors duration-400"
+                      style={{
+                        color: lit
                           ? member.accent
                           : "color-mix(in srgb, var(--color-bone) 45%, transparent)",
-                    }}
-                  >
-                    {member.role}
+                      }}
+                    >
+                      {member.role}
+                    </span>
                   </span>
-                </span>
-              </Link>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </motion.div>
 

@@ -125,6 +125,14 @@ export type Member = {
   photo: string;
   /** background-removed PNG for the landing-page lineup; falls back to `photo` */
   cutout?: string;
+  /**
+   * Landing-page line-up geometry. Cut-outs are framed inconsistently — some
+   * full-body, some waist-up — so scaling them all to one box height makes a
+   * waist-up crop look the same size as a full-body shot. `scale` normalises
+   * everyone by HEAD SIZE instead, and `drop` then slides them vertically so
+   * the heads line up. Re-measure both if you swap a photo.
+   */
+  lineup: { scale: number; drop: number; aspect: number };
   /** one line, used on cards and as the page's standfirst */
   tagline: string;
   bio: string[];
@@ -151,6 +159,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/harsh-roy.jpg",
     cutout: "/cutouts/harsh-roy.png",
+    lineup: { scale: 1.02, drop: 0.025, aspect: 0.5347 },
     tagline:
       "Founded the band, named the direction, and wrote the words to every original.",
     bio: [
@@ -185,6 +194,7 @@ export const MEMBERS: Member[] = [
     accent: "#F97316",
     photo: "/photos/partho-roy.jpg",
     cutout: "/cutouts/partho-roy.png",
+    lineup: { scale: 1.03, drop: 0.023, aspect: 0.3517 },
     tagline:
       "Co-founded the band and runs the parts of a show the audience never sees.",
     bio: [
@@ -219,6 +229,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/mathias-oundo.jpg",
     cutout: "/cutouts/mathias-oundo.png",
+    lineup: { scale: 0.93, drop: -0.073, aspect: 0.6629 },
     tagline:
       "Choir, opera, an attempt at Hindustani classical — and somehow a metal band.",
     bio: [
@@ -252,6 +263,7 @@ export const MEMBERS: Member[] = [
     accent: "#22C55E",
     photo: "/photos/arnold-singh.jpg",
     cutout: "/cutouts/arnold-singh.png",
+    lineup: { scale: 0.78, drop: -0.208, aspect: 0.3766 },
     tagline:
       "A decade of screams out of the North-East, and the voice that drives First and Final.",
     bio: [
@@ -285,6 +297,7 @@ export const MEMBERS: Member[] = [
     accent: "#F43F5E",
     photo: "/photos/riyan-gogoi.jpg",
     cutout: "/cutouts/riyan-gogoi.png",
+    lineup: { scale: 0.73, drop: -0.233, aspect: 0.5418 },
     tagline:
       "Brought in to drag the music somewhere darker. Wrote Kezualty of War.",
     bio: [
@@ -317,6 +330,7 @@ export const MEMBERS: Member[] = [
     accent: "#F59E0B",
     photo: "/photos/shubhra-ghosh.jpg",
     cutout: "/cutouts/shubhra-ghosh.png",
+    lineup: { scale: 1.0, drop: -0.033, aspect: 0.4314 },
     tagline:
       "Rabindra Sangeet and Bengali folk in, metal guitar out. Nobody is quite sure how.",
     bio: [
@@ -348,6 +362,7 @@ export const MEMBERS: Member[] = [
     accent: "#3B82F6",
     photo: "/photos/yuvraaj-rawat.jpg",
     cutout: "/cutouts/yuvraaj-rawat.png",
+    lineup: { scale: 0.79, drop: -0.183, aspect: 0.6287 },
     tagline:
       "Fifteen years behind a kit, and in the room from the very first rehearsal.",
     bio: [
@@ -385,6 +400,7 @@ export const MEMBERS: Member[] = [
     accent: "#8B5CF6",
     photo: "/photos/aditya-singh.jpg",
     cutout: "/cutouts/aditya-singh.png",
+    lineup: { scale: 0.65, drop: -0.296, aspect: 0.7689 },
     tagline:
       "The youngest in the room, writing bass parts nobody asked for and everybody kept.",
     bio: [

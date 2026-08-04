@@ -145,6 +145,10 @@ export type Member = {
     /** where their head sits across the PNG, 0–1. The figure is positioned so
      *  this lands on the slot's centre, i.e. directly over their name. */
     headCx: number;
+    /** optional manual horizontal offset in --fig units, added after centring.
+     *  Positive moves right. For subjects whose mass sits well off to one side
+     *  of their head — Arnold is bent forward with his legs sprawling left. */
+    nudge?: number;
   };
   /** every other supplied shot of them, shown as a strip on their page */
   gallery: string[];
@@ -298,7 +302,7 @@ export const MEMBERS: Member[] = [
     accent: "#22C55E",
     photo: "/photos/arnold-singh.jpg",
     cutout: "/cutouts/arnold-singh.png",
-    lineup: { scale: 1.02, drop: 0.02, aspect: 0.3766, bodyW: 0.835, headCx: 0.745 },
+    lineup: { scale: 1.02, drop: 0.02, aspect: 0.3766, bodyW: 0.835, headCx: 0.745, nudge: 0.14 },
     gallery: [],
     tagline:
       "A decade of screams out of the North-East, and the voice that drives First and Final.",

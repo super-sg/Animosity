@@ -9,8 +9,9 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-/** Breathing room between adjacent bodies, as a multiple of body width. */
-const AIR = 1.18;
+/** Body-to-body pitch as a multiple of body width. Below 1 the bodies overlap,
+ *  which is what a band standing shoulder to shoulder actually looks like. */
+const AIR = 0.88;
 
 /**
  * A member's slot is only as wide as their BODY — their guitar hangs outside it
@@ -40,7 +41,7 @@ const GEOMETRY = (() => {
   for (const m of LINEUP) {
     const sw = slotUnits(m);
     const iw = imageUnits(m);
-    const left = x + sw / 2 - m.lineup.headCx * iw;
+    const left = x + sw / 2 - m.lineup.headCx * iw + (m.lineup.nudge ?? 0);
     min = Math.min(min, left);
     max = Math.max(max, left + iw);
     x += sw;
@@ -181,11 +182,11 @@ export default function HeroLineup() {
           onMouseLeave={() => setHovered(null)}
         >
           {LINEUP.map((member, i) => {
-            const { scale, drop, headCx } = member.lineup;
+            const { scale, drop, headCx, nudge = 0 } = member.lineup;
             const slotW = slotUnits(member);
             const imgW = imageUnits(member);
             // put their head on the slot's centre line, i.e. over their name
-            const left = slotW / 2 - headCx * imgW;
+            const left = slotW / 2 - headCx * imgW + nudge;
             const dimmed = hovered !== null && hovered !== member.slug;
             const lit = hovered === member.slug;
 

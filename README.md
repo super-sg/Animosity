@@ -145,6 +145,7 @@ lineup: { scale: 1.02, drop: 0.02, aspect: 0.3766, bodyW: 0.835, headCx: 0.745 }
 | `aspect` | the PNG's width ÷ height |
 | `bodyW` | width of the person — torso plus instrument body, *excluding* the neck and headstock — as a fraction of the PNG width. Sets how much floor they occupy. |
 | `headCx` | where their head sits across the PNG, 0–1. The figure is positioned so this lands on the slot's centre, i.e. directly over their name. |
+| `nudge` | optional manual offset in `--fig` units, applied after centring. Positive moves right. Arnold is bent forward with his legs sprawling left of his head, so head-centring left his mass sitting left of his name. |
 
 **Measure head WIDTH, not head height.** Head height was tried and produced two
 visibly wrong passes. It's inflated by hair (Riyan's covers his face entirely) and by
@@ -163,9 +164,12 @@ one column.
 
 Each member's slot is only as wide as their **body**. Their guitar hangs outside it and
 is free to overlap whoever is beside them — which is what a real band photo looks like,
-and is why the row can be `--fig: 439px` here where sizing slots by the full PNG only
-managed 361px. Harsh's guitar is half his bounding box; charging him for that width
-shrank everybody.
+and is why figures are far bigger than when slots were sized by the full PNG. Harsh's
+guitar is half his bounding box; charging him for that width shrank everybody.
+
+`AIR` sets the body-to-body pitch as a multiple of body width. It is **below 1**, so the
+bodies themselves overlap and there is no dead space anywhere in the row — a band stands
+shoulder to shoulder, not evenly spaced. Raising it above 1 opens gaps between people.
 
 Three things this model requires, all of which broke something when missing:
 

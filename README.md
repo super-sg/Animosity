@@ -79,11 +79,33 @@ The band photographs are placed by what they actually show, so none of them repe
 | `public/media-kit/…pdf` | the full kit, linked from booking |
 | `band members pics/`, `full band pics/`, `media-kit/` | originals — not served, not committed |
 
-### Regenerating the cut-outs
+### Where the cut-outs came from
 
-The line-up needs transparent PNGs. Higgsfield's `remove_background` was the plan but
-the account has no credits, so this uses [rembg](https://github.com/danielgatis/rembg)
-locally with the `u2net_human_seg` model — free, offline, repeatable.
+Five of them (Harsh, Partho, Riyan, Shubhra, Yuvraaj) were supplied hand-cut in
+`bg removed pics/`. Those arrived at 408×612, which is only about half the resolution
+the line-up needs on a retina display — but four turned out to be exact downscales of
+photos already in `band members pics/` at 724×1086. So rather than use them directly,
+**their alpha channel is upscaled and applied to the full-resolution original**: the
+supplied mask, at full resolution.
+
+```python
+mask = Image.open(supplied_png).convert('RGBA').split()[3]
+src  = Image.open(full_res_original).convert('RGB')
+src.putalpha(mask.resize(src.size, Image.LANCZOS))
+```
+
+Partho's didn't match any supplied photo, so his is used as given. His also showed his
+full body down to the feet while everyone else stops at the knee — which made
+head-matching scale him to nearly 2× and dominate the row — so he is **cropped to the
+top 62%** to match the others' framing.
+
+Mathias, Arnold and Aditya were never re-supplied and still use the rembg cut-outs below.
+
+### Regenerating a cut-out from scratch
+
+Higgsfield's `remove_background` was the plan but the account has no credits, so this
+uses [rembg](https://github.com/danielgatis/rembg) locally with the `u2net_human_seg`
+model — free, offline, repeatable.
 
 ```bash
 python3 -m venv /tmp/rembg-venv
@@ -161,10 +183,20 @@ constantly on stage lighting (Arnold's best "face" box landed on his shoulder), 
 finding the shoulder line from the alpha mask breaks on raised arms and big hair. Eyes
 on a side-by-side render is the reliable method here.
 
-The bottom 20% of each figure is masked to a fade so mismatched crops dissolve into the
-dark instead of ending on a hard cut. `--fig` is capped by viewport width as well as
-height, using `ROW_UNITS` computed from the data in `HeroLineup.tsx` — so adding a
-member or swapping in a wider photo can't silently push the end of the row off screen.
+Each slot **clips at the floor**, so anyone whose photo runs longer than the others
+(Partho) is cut there rather than spilling over the name plates. The bottom 20% of each
+figure is masked to a fade so the shorter crops dissolve into the dark instead of ending
+on a hard line.
+
+**Overlap is proportional to each figure's own width** (`OVERLAP` in `HeroLineup.tsx`),
+not a flat fraction of `--fig`. A flat overlap ate nearly half of a narrow figure like
+Arnold while barely touching a wide one like Harsh with his guitar out. Note that wider
+cut-outs cost height: the newer ones include the full guitars, which pushed `ROW_UNITS`
+from 3.6 to 4.1 and shrank every figure — more overlap buys some of it back.
+
+`--fig` is capped by viewport width as well as height via `ROW_UNITS`, computed from the
+data — so adding a member or swapping in a wider photo can't silently push the end of
+the row off screen.
 
 ### The hero video
 

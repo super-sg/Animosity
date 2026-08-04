@@ -9,18 +9,26 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-/** How much of a neighbour each figure overlaps, as a fraction of --fig. */
-const LAP = 0.05;
+/**
+ * How much each figure overlaps the one before it, as a fraction of ITS OWN
+ * width. Proportional rather than a flat fraction of --fig: a flat overlap ate
+ * nearly half of a narrow figure like Arnold while barely touching a wide one
+ * like Harsh with his guitar out.
+ */
+const OVERLAP = 0.24;
+
+/** Each figure's width, in multiples of --fig. */
+const widthOf = (m: (typeof LINEUP)[number]) => m.lineup.scale * m.lineup.aspect;
 
 /**
- * Width of the whole row, in multiples of --fig. Each figure is
- * `--fig × scale` tall and `--fig × scale × aspect` wide, less the overlaps.
- * Derived rather than hardcoded so adding a member or swapping a photo for a
- * wider one can't silently push the end of the line-up off screen.
+ * Width of the whole row in multiples of --fig, so --fig can be capped by
+ * viewport width. Derived rather than hardcoded — adding a member or swapping
+ * in a wider photo can't silently push the end of the line-up off screen.
  */
-const ROW_UNITS =
-  LINEUP.reduce((n, m) => n + m.lineup.scale * m.lineup.aspect, 0) -
-  LAP * (LINEUP.length - 1);
+const ROW_UNITS = LINEUP.reduce(
+  (n, m, i) => n + widthOf(m) * (i === 0 ? 1 : 1 - OVERLAP),
+  0,
+);
 
 export default function HeroLineup() {
   const ref = useRef<HTMLElement>(null);
@@ -133,7 +141,7 @@ export default function HeroLineup() {
           by width as well as height to keep all eight on screen. Below lg the
           row scrolls sideways instead. */}
       <motion.div
-        className="relative z-10 mt-auto flex min-h-0 flex-1 items-end [--fig:36svh] [--lap:0px] sm:[--fig:42svh] lg:[--fig:min(52svh,var(--fig-w))] lg:[--lap:calc(var(--fig)*-0.05)]"
+        className="relative z-10 mt-auto flex min-h-0 flex-1 items-end [--fig:36svh] [--lapf:0] sm:[--fig:42svh] lg:[--fig:min(54svh,var(--fig-w))] lg:[--lapf:0.24]"
         style={{
           y: lineupY,
           opacity: fade,
@@ -164,7 +172,10 @@ export default function HeroLineup() {
                 // group rather than eight separate cut-outs; hovering lifts
                 // that member clear of their neighbours
                 style={{
-                  marginLeft: i === 0 ? undefined : "var(--lap)",
+                  marginLeft:
+                    i === 0
+                      ? undefined
+                      : `calc(var(--fig) * var(--lapf) * ${-widthOf(member)})`,
                   zIndex: lit ? 20 : LINEUP.length - i,
                 }}
                 initial={{ opacity: 0, y: 60 }}
@@ -181,8 +192,12 @@ export default function HeroLineup() {
                 >
                   {/* Fixed-height slot keeps every name plate on one line, while
                       the figure inside is sized and nudged individually. */}
+                  {/* Slot clips at the floor. Head-tops all land on the slot's
+                      top edge (because drop = scale − K), so anyone whose photo
+                      runs past the knee — Partho has feet — is cut off at the
+                      floor instead of spilling over the name plates. */}
                   <span
-                    className="relative block h-[var(--fig)]"
+                    className="relative block h-[var(--fig)] overflow-hidden"
                     style={{ width: `calc(var(--fig) * ${scale * aspect})` }}
                   >
                     {/* accent pool at their feet */}
@@ -217,9 +232,12 @@ export default function HeroLineup() {
                     </span>
                   </span>
 
-                  <span className="pointer-events-none block w-full px-1 pt-3 text-center">
+                  {/* Slots overlap and vary a lot in width, so the plate is set
+                      small and tight enough to sit inside the narrowest of them
+                      (Arnold's) without colliding with its neighbour. */}
+                  <span className="pointer-events-none block w-full px-0.5 pt-3 text-center">
                     <span
-                      className="label block truncate transition-colors duration-400"
+                      className="block truncate font-mono text-[0.5rem] font-medium tracking-[0.12em] uppercase transition-colors duration-400 sm:text-[0.5625rem] sm:tracking-[0.16em]"
                       style={{
                         color: lit
                           ? member.accent

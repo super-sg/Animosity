@@ -15,7 +15,7 @@ export default function Booking() {
     <section id="booking" className="relative scroll-mt-24 overflow-hidden py-24 sm:py-32">
       <div className="absolute inset-0 -z-10">
         <Image
-          src="/photos/band-portrait.jpg"
+          src="/photos/band-crowd.jpg"
           alt=""
           fill
           sizes="100vw"

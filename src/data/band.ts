@@ -133,6 +133,8 @@ export type Member = {
    * the heads line up. Re-measure both if you swap a photo.
    */
   lineup: { scale: number; drop: number; aspect: number };
+  /** every other supplied shot of them, shown as a strip on their page */
+  gallery: string[];
   /** one line, used on cards and as the page's standfirst */
   tagline: string;
   bio: string[];
@@ -160,6 +162,13 @@ export const MEMBERS: Member[] = [
     photo: "/photos/harsh-roy.jpg",
     cutout: "/cutouts/harsh-roy.png",
     lineup: { scale: 1.02, drop: 0.025, aspect: 0.5347 },
+    gallery: [
+      "/photos/gallery/harsh-roy/01.jpg",
+      "/photos/gallery/harsh-roy/02.jpg",
+      "/photos/gallery/harsh-roy/03.jpg",
+      "/photos/gallery/harsh-roy/04.jpg",
+      "/photos/gallery/harsh-roy/05.jpg",
+    ],
     tagline:
       "Founded the band, named the direction, and wrote the words to every original.",
     bio: [
@@ -195,6 +204,12 @@ export const MEMBERS: Member[] = [
     photo: "/photos/partho-roy.jpg",
     cutout: "/cutouts/partho-roy.png",
     lineup: { scale: 1.03, drop: 0.023, aspect: 0.3517 },
+    gallery: [
+      "/photos/gallery/partho-roy/01.jpg",
+      "/photos/gallery/partho-roy/02.jpg",
+      "/photos/gallery/partho-roy/03.jpg",
+      "/photos/gallery/partho-roy/04.jpg",
+    ],
     tagline:
       "Co-founded the band and runs the parts of a show the audience never sees.",
     bio: [
@@ -230,6 +245,13 @@ export const MEMBERS: Member[] = [
     photo: "/photos/mathias-oundo.jpg",
     cutout: "/cutouts/mathias-oundo.png",
     lineup: { scale: 0.93, drop: -0.073, aspect: 0.6629 },
+    gallery: [
+      "/photos/gallery/mathias-oundo/01.jpg",
+      "/photos/gallery/mathias-oundo/02.jpg",
+      "/photos/gallery/mathias-oundo/03.jpg",
+      "/photos/gallery/mathias-oundo/04.jpg",
+      "/photos/gallery/mathias-oundo/05.jpg",
+    ],
     tagline:
       "Choir, opera, an attempt at Hindustani classical — and somehow a metal band.",
     bio: [
@@ -264,6 +286,7 @@ export const MEMBERS: Member[] = [
     photo: "/photos/arnold-singh.jpg",
     cutout: "/cutouts/arnold-singh.png",
     lineup: { scale: 0.78, drop: -0.208, aspect: 0.3766 },
+    gallery: [],
     tagline:
       "A decade of screams out of the North-East, and the voice that drives First and Final.",
     bio: [
@@ -298,6 +321,13 @@ export const MEMBERS: Member[] = [
     photo: "/photos/riyan-gogoi.jpg",
     cutout: "/cutouts/riyan-gogoi.png",
     lineup: { scale: 0.73, drop: -0.233, aspect: 0.5418 },
+    gallery: [
+      "/photos/gallery/riyan-gogoi/01.jpg",
+      "/photos/gallery/riyan-gogoi/02.jpg",
+      "/photos/gallery/riyan-gogoi/03.jpg",
+      "/photos/gallery/riyan-gogoi/04.jpg",
+      "/photos/gallery/riyan-gogoi/05.jpg",
+    ],
     tagline:
       "Brought in to drag the music somewhere darker. Wrote Kezualty of War.",
     bio: [
@@ -331,6 +361,11 @@ export const MEMBERS: Member[] = [
     photo: "/photos/shubhra-ghosh.jpg",
     cutout: "/cutouts/shubhra-ghosh.png",
     lineup: { scale: 1.0, drop: -0.033, aspect: 0.4314 },
+    gallery: [
+      "/photos/gallery/shubhra-ghosh/01.jpg",
+      "/photos/gallery/shubhra-ghosh/02.jpg",
+      "/photos/gallery/shubhra-ghosh/03.jpg",
+    ],
     tagline:
       "Rabindra Sangeet and Bengali folk in, metal guitar out. Nobody is quite sure how.",
     bio: [
@@ -363,6 +398,12 @@ export const MEMBERS: Member[] = [
     photo: "/photos/yuvraaj-rawat.jpg",
     cutout: "/cutouts/yuvraaj-rawat.png",
     lineup: { scale: 0.79, drop: -0.183, aspect: 0.6287 },
+    gallery: [
+      "/photos/gallery/yuvraaj-rawat/01.jpg",
+      "/photos/gallery/yuvraaj-rawat/02.jpg",
+      "/photos/gallery/yuvraaj-rawat/03.jpg",
+      "/photos/gallery/yuvraaj-rawat/04.jpg",
+    ],
     tagline:
       "Fifteen years behind a kit, and in the room from the very first rehearsal.",
     bio: [
@@ -401,6 +442,7 @@ export const MEMBERS: Member[] = [
     photo: "/photos/aditya-singh.jpg",
     cutout: "/cutouts/aditya-singh.png",
     lineup: { scale: 0.65, drop: -0.296, aspect: 0.7689 },
+    gallery: [],
     tagline:
       "The youngest in the room, writing bass parts nobody asked for and everybody kept.",
     bio: [
@@ -453,7 +495,7 @@ export const HISTORY: Chapter[] = [
       "Animosity starts in Greater Noida with Harsh on guitar and Partho on bass — one a guitarist since 2018 with a clear idea of the direction, the other already five years deep in professional live music, set design and console work. Yuvraaj is behind the kit from the very first rehearsal.",
       "The name comes first. Animosity: the feeling of angst, of rebellion, of belonging to a higher cause. Everything after that is an attempt to build a sound that earns it.",
     ],
-    photo: "/photos/band-live.jpg",
+    photo: "/photos/band-stage-red.jpg",
     cast: ["harsh-roy", "partho-roy", "yuvraaj-rawat"],
     isPlaceholder: true,
   },
@@ -504,7 +546,7 @@ export const HISTORY: Chapter[] = [
       "First and Final comes first, lyrics by Harsh and carried by Arnold's fry. Mental Distortion turns the same anger inward. Kezualty of War, written musically by Riyan, is the heaviest thing in the catalogue.",
       "A music video is shot and released for First and Final. Three songs is not a lot. Three songs that are entirely theirs is a different thing altogether.",
     ],
-    photo: "/photos/band-portrait.jpg",
+    photo: "/photos/band-depot.jpg",
     isPlaceholder: true,
   },
   {

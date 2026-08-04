@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { MEMBERS, SONGS, memberBySlug } from "@/data/band";
 import { Reveal } from "@/components/motion-primitives";
 import MemberIntro from "@/components/MemberIntro";
+import MemberGallery from "@/components/MemberGallery";
 
 type Params = { slug: string };
 
@@ -140,6 +141,12 @@ export default async function MemberPage({ params }: { params: Promise<Params> }
           ))}
         </ul>
       </section>
+
+      <MemberGallery
+        images={member.gallery}
+        name={member.name}
+        accent={member.accent}
+      />
 
       {/* Tracks they're named on */}
       {tracks.length > 0 && (

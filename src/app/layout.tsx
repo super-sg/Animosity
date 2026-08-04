@@ -57,6 +57,25 @@ export const metadata: Metadata = {
     images: ["/photos/band-live.jpg"],
   },
   alternates: { canonical: "/" },
+
+  /**
+   * Tab icon is the band's own "A" animation. Firefox plays the GIF; Chrome and
+   * Safari don't animate GIF favicons, so they land on its first frame — which
+   * is the clean glyph, not a glitch frame. The PNG/ICO entries are there for
+   * anything that won't take a GIF at all. Strokes are dilated at 16/32px
+   * because the blackletter A is too thin to read otherwise.
+   */
+  icons: {
+    icon: [
+      { url: "/favicon/icon-32.gif", type: "image/gif", sizes: "32x32" },
+      { url: "/favicon/icon-48.gif", type: "image/gif", sizes: "48x48" },
+      { url: "/favicon/icon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon/icon-16.png", type: "image/png", sizes: "16x16" },
+      { url: "/favicon/favicon.ico", sizes: "any" },
+    ],
+    apple: [{ url: "/favicon/icon-180.png", sizes: "180x180" }],
+  },
+  manifest: "/favicon/site.webmanifest",
 };
 
 export const viewport: Viewport = {

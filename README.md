@@ -54,11 +54,26 @@ line-up, the grid, the origins list and the prev/next rings.
 
 ## Assets
 
+Every supplied photograph is used, each in one deliberate place — 32 member shots
+(8 portraits + 26 gallery frames), 6 band shots, and the 8 cut-outs derived from them.
+
 | Path | What |
 |---|---|
 | `public/cutouts/*.png` | background-removed PNGs for the landing-page line-up |
-| `public/photos/<slug>.jpg` | member portraits |
-| `public/photos/band-*.jpg` | group and live shots |
+| `public/photos/<slug>.jpg` | member portraits — line-up readout, grid card, page masthead |
+| `public/photos/gallery/<slug>/NN.jpg` | that member's other shots, as a lightbox strip on their page |
+| `public/photos/band-*.jpg` | the six band shots, one per job (see below) |
+
+The band photographs are placed by what they actually show, so none of them repeat:
+
+| File | Where |
+|---|---|
+| `band-live` | `/history` masthead + the History card on the landing page |
+| `band-portrait` | `/members` masthead + the Band card + history's closing chapter |
+| `band-stage-red` | history chapter I, *The Founding* |
+| `band-cokestudio-wide` | behind the Battle of Bands record |
+| `band-depot` | history chapter V, *Three Originals* |
+| `band-crowd` | behind the booking section — shot from behind, into the crowd |
 | `public/video/hero-backdrop.mp4` | the band's own stage LED backdrop |
 | `public/brand/animosity-logo-glyph.png` | wordmark, sticker outline stripped so the neon glow traces the letterforms |
 | `public/media-kit/…pdf` | the full kit, linked from booking |
@@ -136,6 +151,29 @@ ffmpeg -i "source.mp4" -an -r 24 -vf "crop=1280:450:0:270" \
   -c:v libx264 -crf 32 -preset veryslow -pix_fmt yuv420p \
   -movflags +faststart public/video/hero-backdrop.mp4
 ```
+
+### The tab icon
+
+The favicon is the band's own `Animosity Animation.gif` — the "A" glyph with embers and
+a glitch burst. Generated into `public/favicon/`:
+
+| File | Notes |
+|---|---|
+| `icon-32.gif`, `icon-48.gif` | animated, every 3rd/4th frame, ~60KB each |
+| `icon-16/32/48.png` | static, from frame 0 (a clean glyph, not a glitch frame) |
+| `icon-180/192/512.png` | apple-touch + PWA |
+| `favicon.ico` | 16/32/48 multi-size; a copy sits at `public/favicon.ico` for clients that request it blindly |
+
+Three things worth knowing if you regenerate it:
+
+1. **Only Firefox animates GIF favicons.** Chrome and Safari show the first frame. That's
+   why frame 0 is used for every static size — land on the glyph, never on a glitch frame.
+2. **The strokes are dilated at 16 and 32px.** The blackletter A is outlined and far too
+   thin to read at tab size otherwise; a `MaxFilter` pass twice at ≤32px and once at 48px
+   fixes it without filling in the counters. No dilation above that.
+3. **Don't put a `favicon.ico` in `src/app/`.** Next auto-injects that as a 256×256 `<link>`
+   *ahead* of everything in `metadata.icons`, and browsers then prefer it over the GIF.
+   Declaring the icons explicitly in `layout.tsx` and keeping the file in `public/` avoids it.
 
 ### The media kit PDF
 

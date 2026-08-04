@@ -14,7 +14,7 @@ export default function Achievements() {
       {/* Backing photograph, pushed way down */}
       <div className="absolute inset-0 -z-10">
         <Image
-          src="/photos/live-cokestudio.jpg"
+          src="/photos/band-cokestudio-wide.jpg"
           alt=""
           fill
           sizes="100vw"

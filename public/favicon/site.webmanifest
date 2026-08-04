@@ -1,0 +1,19 @@
+{
+  "name": "Animosity — Hard Rock / Metal Band",
+  "short_name": "Animosity",
+  "description": "Angst. Rebellion. A higher cause. Hard rock and metal out of Delhi-NCR.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    { "src": "/favicon/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    {
+      "src": "/favicon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

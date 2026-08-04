@@ -94,10 +94,10 @@ src  = Image.open(full_res_original).convert('RGB')
 src.putalpha(mask.resize(src.size, Image.LANCZOS))
 ```
 
-Partho's didn't match any supplied photo, so his is used as given. His also showed his
-full body down to the feet while everyone else stops at the knee — which made
-head-matching scale him to nearly 2× and dominate the row — so he is **cropped to the
-top 62%** to match the others' framing.
+All five match a full-resolution source, so all five get the treatment above.
+
+Yuvraaj's had a free-standing cymbal stand down his left edge, which widened his slot
+for no subject; his PNG is cropped 13% in from the left to drop it.
 
 Mathias, Arnold and Aditya were never re-supplied and still use the rembg cut-outs below.
 
@@ -129,21 +129,54 @@ in the cutout; a clear upper-body shot works far better.
 
 ### Line-up proportions — read this before swapping a photo
 
-The cut-outs are framed inconsistently: some are full-body, some are waist-up. If you
-just scale them all to one box height, a waist-up crop renders the same height as a
-full-body shot and the person looks like a giant. So each member carries a `lineup`
-block in `MEMBERS`:
+The cut-outs are framed inconsistently: some are full-body, some are waist-up, and the
+guitars swing out to wildly different widths. Scaling them all to one box height makes a
+waist-up crop render the same height as a full-body shot, and the person looks like a
+giant. So each member carries a `lineup` block in `MEMBERS`:
 
 ```ts
-lineup: { scale: 1.02, drop: 0.025, aspect: 0.5347 }
+lineup: { scale: 1.02, drop: 0.02, aspect: 0.3766, bodyW: 0.835, headCx: 0.745 }
 ```
 
 | Field | Meaning |
 |---|---|
-| `scale` | height multiplier that makes everyone's **head the same size**. Bigger = drawn larger. A tight crop needs a *smaller* scale. |
-| `drop` | vertical nudge as a fraction of the base height, applied after scaling, so the **heads line up**. Negative moves up. |
-| `aspect` | the PNG's width ÷ height. Sets the slot width so nothing is squashed. Just read it off the file. |
-| `nudge` | optional horizontal shift, same units. For subjects who sit off-centre inside their own cut-out — Arnold is bent forward with his legs sprawling left, which put his mass at 42% across and made him crowd Harsh. |
+| `scale` | height multiplier that equalises **head WIDTH** across the line-up |
+| `drop` | vertical slide applied after scaling, so the crowns align. Always `scale − 1` |
+| `aspect` | the PNG's width ÷ height |
+| `bodyW` | width of the person — torso plus instrument body, *excluding* the neck and headstock — as a fraction of the PNG width. Sets how much floor they occupy. |
+| `headCx` | where their head sits across the PNG, 0–1. The figure is positioned so this lands on the slot's centre, i.e. directly over their name. |
+
+**Measure head WIDTH, not head height.** Head height was tried and produced two
+visibly wrong passes. It's inflated by hair (Riyan's covers his face entirely) and by
+leaning toward camera (Arnold is bent double screaming, Mathias leans back) — which made
+the two singers scale to 0.82 and 0.80 when they should have been 1.02 and 0.97, and
+they looked squashed between everyone else. Head *width* barely moves with tilt or hair,
+and measured that way the whole band lands in a 0.13–0.20 band.
+
+All five values can be derived from the cut-out's alpha channel; see the measurement
+scripts in the git history for this commit. Head band = the widest opaque run across
+the top 9% of the figure. Body band = the widest run of columns that are *densely*
+opaque, which excludes guitar necks because a diagonal neck fills very little of any
+one column.
+
+### The slot model
+
+Each member's slot is only as wide as their **body**. Their guitar hangs outside it and
+is free to overlap whoever is beside them — which is what a real band photo looks like,
+and is why the row can be `--fig: 439px` here where sizing slots by the full PNG only
+managed 361px. Harsh's guitar is half his bounding box; charging him for that width
+shrank everybody.
+
+Three things this model requires, all of which broke something when missing:
+
+- **`pointer-events-none` on the image.** It spills outside the slot, so without this a
+  wide guitar sits on top of the next member and swallows their hover and click. Harsh's
+  guitar made Arnold unhoverable.
+- **Clip only along the floor.** `overflow: hidden` would cut the guitars off too, so
+  the slot uses `clip-path: inset(-100vh -100vw 0 -100vw)` — bottom edge only.
+- **Size `--fig` by image extent, not slot extent.** `GEOMETRY` in `HeroLineup.tsx`
+  walks the row and unions the drawn images; otherwise the last member's bass runs off
+  the right edge. `shift` re-centres, because the overhang isn't symmetrical.
 
 ### Two different orders
 
@@ -158,30 +191,14 @@ Only `HeroLineup.tsx` imports `LINEUP`. If you add a member to `MEMBERS`, add th
 to `LINEUP_ORDER` too — it throws at build time on an unknown slug, but it won't notice
 one you left out.
 
-**`drop` is derived, not guessed.** Because the cut-outs are cropped to their bounding
-box, the top of the image *is* the top of the head, so head-tops line up exactly when
-
-```
-drop = scale − K        (K ≈ 0.99 for the current set)
-```
-
+**`drop` is derived, not guessed.** The cut-outs are cropped to their bounding box, so
+the top of the image *is* the crown — head-tops line up exactly when `drop = scale − 1`.
 Keep that relationship when you change a `scale`, or the heads drift apart.
 
-To re-measure after swapping a photo: render everyone at equal height side by side and
-compare heads by eye, then `scale = (median head height) ÷ (this member's head height)`.
-
-Two things that will mislead you if you measure carelessly — both of which produced a
-visibly wrong first pass:
-
-- **Hair is not head.** Riyan's hair covers his face; measuring the hair mass made his
-  "head" look enormous and shrank him to 73%, well below everyone else.
-- **Leaning toward camera enlarges the head.** Arnold is bent double screaming into the
-  mic, so perspective inflates his head relative to a standing shot. Same result.
-
-Automated approaches were tried and are not worth repeating: OpenCV Haar cascades fire
-constantly on stage lighting (Arnold's best "face" box landed on his shoulder), and
-finding the shoulder line from the alpha mask breaks on raised arms and big hair. Eyes
-on a side-by-side render is the reliable method here.
+Two automated approaches were tried and are not worth repeating: OpenCV Haar cascades
+fire constantly on stage lighting (Arnold's best-scoring "face" box landed on his
+shoulder), and finding the shoulder line from the alpha mask breaks on raised arms and
+big hair. Measuring the head band off the alpha, as above, is what works.
 
 Each slot **clips at the floor**, so anyone whose photo runs longer than the others
 (Partho) is cut there rather than spilling over the name plates. The bottom 20% of each

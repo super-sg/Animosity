@@ -9,26 +9,46 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-/**
- * How much each figure overlaps the one before it, as a fraction of ITS OWN
- * width. Proportional rather than a flat fraction of --fig: a flat overlap ate
- * nearly half of a narrow figure like Arnold while barely touching a wide one
- * like Harsh with his guitar out.
- */
-const OVERLAP = 0.24;
-
-/** Each figure's width, in multiples of --fig. */
-const widthOf = (m: (typeof LINEUP)[number]) => m.lineup.scale * m.lineup.aspect;
+/** Breathing room between adjacent bodies, as a multiple of body width. */
+const AIR = 1.18;
 
 /**
- * Width of the whole row in multiples of --fig, so --fig can be capped by
- * viewport width. Derived rather than hardcoded — adding a member or swapping
- * in a wider photo can't silently push the end of the line-up off screen.
+ * A member's slot is only as wide as their BODY — their guitar hangs outside it
+ * and is free to overlap whoever is next to them. Sizing slots by the full PNG
+ * instead made the wide cut-outs (Harsh's guitar is half his bounding box) eat
+ * the row's width budget and shrink everybody.
  */
-const ROW_UNITS = LINEUP.reduce(
-  (n, m, i) => n + widthOf(m) * (i === 0 ? 1 : 1 - OVERLAP),
-  0,
-);
+const slotUnits = (m: (typeof LINEUP)[number]) =>
+  m.lineup.scale * m.lineup.aspect * m.lineup.bodyW * AIR;
+
+/** Full drawn width of the PNG, in multiples of --fig. */
+const imageUnits = (m: (typeof LINEUP)[number]) => m.lineup.scale * m.lineup.aspect;
+
+/**
+ * Row geometry in multiples of --fig, derived from the data so adding a member
+ * or swapping in a wider photo can't silently push anyone off screen.
+ *
+ * `extent` measures the union of the drawn IMAGES, not the slots — the slots
+ * only cover bodies, and a guitar hanging off the last member would otherwise
+ * be clipped by the viewport. `shift` re-centres the row on that extent, since
+ * the overhang isn't symmetrical.
+ */
+const GEOMETRY = (() => {
+  let x = 0;
+  let min = Infinity;
+  let max = -Infinity;
+  for (const m of LINEUP) {
+    const sw = slotUnits(m);
+    const iw = imageUnits(m);
+    const left = x + sw / 2 - m.lineup.headCx * iw;
+    min = Math.min(min, left);
+    max = Math.max(max, left + iw);
+    x += sw;
+  }
+  const lead = -Math.min(0, min);
+  const trail = Math.max(0, max - x);
+  return { extent: max - min, shift: (trail - lead) / 2 };
+})();
 
 export default function HeroLineup() {
   const ref = useRef<HTMLElement>(null);
@@ -91,14 +111,14 @@ export default function HeroLineup() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-t from-void via-void/45 to-void/55" />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_38%,transparent_30%,var(--color-void)_96%)]" />
 
-      {/* Whoever is hovered washes the whole stage in their colour */}
+      {/* Whoever is hovered washes the whole stage in their accent colour */}
       <motion.div
         className="pointer-events-none absolute inset-0 -z-10"
-        animate={{ opacity: active ? 0.3 : 0 }}
+        animate={{ opacity: active ? 0.42 : 0 }}
         transition={{ duration: 0.6, ease: EASE }}
         style={{
           background: active
-            ? `radial-gradient(ellipse 70% 60% at 50% 85%, ${active.accent}, transparent 72%)`
+            ? `radial-gradient(ellipse 72% 62% at 50% 88%, ${active.accent}, transparent 70%)`
             : undefined,
         }}
       />
@@ -135,20 +155,16 @@ export default function HeroLineup() {
         </h1>
       </motion.div>
 
-      {/* The line-up.
-          `--fig` is the height a member with scale 1 is drawn at. The row is
-          SUM(scale × aspect) ≈ 3.64 figures wide, so on desktop --fig is capped
-          by width as well as height to keep all eight on screen. Below lg the
-          row scrolls sideways instead. */}
+      {/* The line-up */}
       <motion.div
-        className="relative z-10 mt-auto flex min-h-0 flex-1 items-end [--fig:36svh] [--lapf:0] sm:[--fig:42svh] lg:[--fig:min(54svh,var(--fig-w))] lg:[--lapf:0.24]"
+        className="relative z-10 mt-auto flex min-h-0 flex-1 items-end [--fig:38svh] sm:[--fig:44svh] lg:[--fig:min(56svh,var(--fig-w))]"
         style={{
           y: lineupY,
           opacity: fade,
-          // width-derived cap on --fig; the class above picks whichever of this
+          // width-derived cap on --fig; the class above takes whichever of this
           // and the height cap is smaller
           ...({
-            "--fig-w": `calc((100vw - 4.5rem) / ${ROW_UNITS.toFixed(3)})`,
+            "--fig-w": `calc((100vw - 4.5rem) / ${GEOMETRY.extent.toFixed(3)})`,
           } as React.CSSProperties),
         }}
       >
@@ -156,11 +172,20 @@ export default function HeroLineup() {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-void via-void/70 to-transparent" />
 
         <div
-          className="relative flex w-full snap-x snap-mandatory items-end gap-1 lg:gap-0 overflow-x-auto overflow-y-hidden px-3 lg:justify-center lg:overflow-visible lg:px-6"
+          className="relative flex w-full snap-x snap-mandatory items-end gap-2 overflow-x-auto overflow-y-visible px-3 lg:translate-x-[calc(var(--fig)*var(--shift))] lg:justify-center lg:gap-0 lg:overflow-visible lg:px-6"
+          style={
+            {
+              "--shift": (-GEOMETRY.shift).toFixed(4),
+            } as React.CSSProperties
+          }
           onMouseLeave={() => setHovered(null)}
         >
           {LINEUP.map((member, i) => {
-            const { scale, drop, aspect, nudge = 0 } = member.lineup;
+            const { scale, drop, headCx } = member.lineup;
+            const slotW = slotUnits(member);
+            const imgW = imageUnits(member);
+            // put their head on the slot's centre line, i.e. over their name
+            const left = slotW / 2 - headCx * imgW;
             const dimmed = hovered !== null && hovered !== member.slug;
             const lit = hovered === member.slug;
 
@@ -168,16 +193,7 @@ export default function HeroLineup() {
               <motion.div
                 key={member.slug}
                 className="relative shrink-0 snap-center"
-                // slight shoulder-to-shoulder overlap, so they read as one
-                // group rather than eight separate cut-outs; hovering lifts
-                // that member clear of their neighbours
-                style={{
-                  marginLeft:
-                    i === 0
-                      ? undefined
-                      : `calc(var(--fig) * var(--lapf) * ${-widthOf(member)})`,
-                  zIndex: lit ? 20 : LINEUP.length - i,
-                }}
+                style={{ zIndex: lit ? 30 : LINEUP.length - i }}
                 initial={{ opacity: 0, y: 60 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.1, delay: 0.55 + i * 0.07, ease: EASE }}
@@ -190,30 +206,36 @@ export default function HeroLineup() {
                   className="group relative flex flex-col items-center"
                   aria-label={`${member.name} — ${member.role}`}
                 >
-                  {/* Fixed-height slot keeps every name plate on one line, while
-                      the figure inside is sized and nudged individually. */}
-                  {/* Slot clips at the floor. Head-tops all land on the slot's
-                      top edge (because drop = scale − K), so anyone whose photo
-                      runs past the knee — Partho has feet — is cut off at the
-                      floor instead of spilling over the name plates. */}
+                  {/* The slot is body-width and clips only along the floor, so
+                      guitars can hang over the neighbours while the person
+                      stays lined up with their name plate. */}
                   <span
-                    className="relative block h-[var(--fig)] overflow-hidden"
-                    style={{ width: `calc(var(--fig) * ${scale * aspect})` }}
+                    className="relative block h-[var(--fig)]"
+                    style={{
+                      width: `calc(var(--fig) * ${slotW})`,
+                      clipPath: "inset(-100vh -100vw 0 -100vw)",
+                    }}
                   >
                     {/* accent pool at their feet */}
                     <span
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-24 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-70"
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-24 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-80"
                       style={{ background: member.accent }}
                     />
 
+                    {/* pointer-events-none matters: the image spills outside the
+                        slot, so without it a wide guitar sits on top of the next
+                        member and swallows their hover and click. The hit target
+                        stays the body-width slot. */}
                     <span
-                      className={`absolute inset-x-0 bottom-0 block transition-all duration-700 ease-[var(--ease-out-expo)] ${
-                        dimmed ? "opacity-55" : "opacity-100"
+                      className={`pointer-events-none absolute bottom-0 block transition-all duration-700 ease-[var(--ease-out-expo)] ${
+                        dimmed ? "opacity-45" : "opacity-100"
                       }`}
                       style={{
+                        width: `calc(var(--fig) * ${imgW})`,
                         height: `calc(var(--fig) * ${scale})`,
-                        transform: `translate(calc(var(--fig) * ${nudge}), calc(var(--fig) * ${drop} + ${lit ? "-0.75rem" : "0px"}))`,
-                        // dissolve the bottom edge so the varied crops don't
+                        left: `calc(var(--fig) * ${left})`,
+                        transform: `translateY(calc(var(--fig) * ${drop} + ${lit ? "-0.85rem" : "0px"}))`,
+                        // dissolve the bottom edge so the shorter crops don't
                         // all end on a hard horizontal cut
                         maskImage:
                           "linear-gradient(to bottom, #000 80%, transparent 100%)",
@@ -224,17 +246,14 @@ export default function HeroLineup() {
                         alt={member.name}
                         fill
                         priority={i < 4}
-                        sizes="(max-width: 640px) 40vw, (max-width: 1024px) 26vw, 15vw"
-                        className={`object-contain object-bottom drop-shadow-[0_14px_30px_rgba(0,0,0,0.8)] transition-all duration-700 ease-[var(--ease-out-expo)] ${
-                          lit ? "grayscale-0" : "grayscale-[0.75]"
+                        sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 18vw"
+                        className={`object-contain object-bottom drop-shadow-[0_16px_34px_rgba(0,0,0,0.85)] transition-all duration-700 ease-[var(--ease-out-expo)] ${
+                          lit ? "grayscale-0 brightness-110" : "grayscale-[0.85]"
                         }`}
                       />
                     </span>
                   </span>
 
-                  {/* Slots overlap and vary a lot in width, so the plate is set
-                      small and tight enough to sit inside the narrowest of them
-                      (Arnold's) without colliding with its neighbour. */}
                   <span className="pointer-events-none block w-full px-0.5 pt-3 text-center">
                     <span
                       className="block truncate font-mono text-[0.5rem] font-medium tracking-[0.12em] uppercase transition-colors duration-400 sm:text-[0.5625rem] sm:tracking-[0.16em]"

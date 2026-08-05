@@ -560,7 +560,7 @@ export const MEMBERS: Member[] = [
     accent: "#F97316",
     photo: "/photos/partho-roy.jpg",
     cutout: "/cutouts/partho-roy.png",
-    lineup: { scale: 1.0, drop: 0.0, aspect: 0.6826, bodyW: 0.484, headCx: 0.386, nudge: -0.05, layer: 35 },
+    lineup: { scale: 1.0, drop: 0.0, aspect: 0.6826, bodyW: 0.484, headCx: 0.386, nudge: -0.05, layer: 25 },
     gallery: [
       "/photos/gallery/partho-roy/01.jpg",
       "/photos/gallery/partho-roy/02.jpg",
@@ -839,7 +839,6 @@ export const LINEUP_ORDER = [
   "mathias-oundo",
   "yuvraaj-rawat",
   "partho-roy",
-  "aditya-singh",
 ] as const;
 
 export const LINEUP: Member[] = LINEUP_ORDER.map((slug) => {
@@ -847,6 +846,31 @@ export const LINEUP: Member[] = LINEUP_ORDER.map((slug) => {
   if (!member) throw new Error(`LINEUP_ORDER references unknown member: ${slug}`);
   return member;
 });
+
+/* ================================================================== */
+/* Stand-ins                                                           */
+/* ================================================================== */
+
+/**
+ * People who filled in with the band for brief periods. Deliberately NOT in
+ * `MEMBERS`: that list drives the member pages, the line-up, the origins list
+ * and the prev/next rings, and a stand-in with no bio would land in all of it.
+ * They get a named credit on /members instead.
+ *
+ * TODO: instrument, dates and a line each — none of that was supplied.
+ */
+export type StandIn = {
+  name: string;
+  /** what they covered, e.g. "Bass" — blank until the band confirms */
+  role?: string;
+  /** when, e.g. "2024" — blank until the band confirms */
+  period?: string;
+};
+
+export const STANDINS: StandIn[] = [
+  { name: "Kiwinda Ose Ilboundo" },
+  { name: "Shailesh Padala" },
+];
 
 /* ================================================================== */
 /* History                                                             */

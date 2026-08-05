@@ -35,15 +35,21 @@ Change it there and every route follows — no component edits needed.
 | History chapters + which members enter in each | `HISTORY` |
 | Technical rider | `RIDER` |
 | Nav links | `NAV` |
+| People who filled in briefly | `STANDINS` |
 
 Adding a member to `MEMBERS` automatically creates their page, adds them to the grid,
 the origins list and the prev/next rings. The landing-page line-up is a separate list —
 see `LINEUP_ORDER` below — so a member can be left out of the hero without disappearing
 from the site.
 
-Aditya is worth knowing about: he's the only one still on a media-kit crop, waist-up with
-no body below, so he sits shorter than everyone else. A full-body photo of him is the one
-asset that would finish the row off.
+Aditya is out of the hero for that reason: he's the only one still on a media-kit crop,
+waist-up with no body below, so he can't stand level with the supplied full cut-outs. He
+keeps his page and his grid card. A full-body photo of him is the one asset that would
+let him back into the row.
+
+**Stand-ins** live in `STANDINS`, not `MEMBERS`. They're credited on `/members` but get
+no member page, no place in the line-up and no prev/next ring — which is right for
+someone who covered a few shows, and avoids inventing a bio for them.
 
 ### ⚠️ Still needs the band
 

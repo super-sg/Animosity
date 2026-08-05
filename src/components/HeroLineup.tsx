@@ -39,6 +39,7 @@ const GEOMETRY = (() => {
   let min = Infinity;
   let max = -Infinity;
   for (const m of LINEUP) {
+    x += m.lineup.gapBefore ?? 0;
     const sw = slotUnits(m);
     const iw = imageUnits(m);
     const left = x + sw / 2 - m.lineup.headCx * iw + (m.lineup.nudge ?? 0);
@@ -194,7 +195,12 @@ export default function HeroLineup() {
               <motion.div
                 key={member.slug}
                 className="relative shrink-0 snap-center"
-                style={{ zIndex: lit ? 30 : LINEUP.length - i }}
+                style={{
+                  zIndex: lit ? 30 : LINEUP.length - i,
+                  marginLeft: member.lineup.gapBefore
+                    ? `calc(var(--fig) * ${member.lineup.gapBefore})`
+                    : undefined,
+                }}
                 initial={{ opacity: 0, y: 60 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.1, delay: 0.55 + i * 0.07, ease: EASE }}

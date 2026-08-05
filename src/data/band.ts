@@ -147,8 +147,11 @@ export type Member = {
     headCx: number;
     /** optional manual horizontal offset in --fig units, added after centring.
      *  Positive moves right. For subjects whose mass sits well off to one side
-     *  of their head — Arnold is bent forward with his legs sprawling left. */
+     *  of their head — Arnold leans with his knee out to the left. */
     nudge?: number;
+    /** optional extra space before this member, in --fig units. Used to give
+     *  the three guitarists a little air rather than spacing the whole row. */
+    gapBefore?: number;
   };
   /** every other supplied shot of them, shown as a strip on their page */
   gallery: string[];
@@ -178,7 +181,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/harsh-roy.jpg",
     cutout: "/cutouts/harsh-roy.png",
-    lineup: { scale: 0.93, drop: -0.07, aspect: 0.8266, bodyW: 0.512, headCx: 0.396 },
+    lineup: { scale: 0.93, drop: -0.07, aspect: 0.8266, bodyW: 0.512, headCx: 0.396, gapBefore: 0.05 },
     gallery: [
       "/photos/gallery/harsh-roy/01.jpg",
       "/photos/gallery/harsh-roy/02.jpg",
@@ -302,7 +305,7 @@ export const MEMBERS: Member[] = [
     accent: "#22C55E",
     photo: "/photos/arnold-singh.jpg",
     cutout: "/cutouts/arnold-singh.png",
-    lineup: { scale: 1.04, drop: 0.04, aspect: 0.3766, bodyW: 0.835, headCx: 0.745, nudge: 0.11 },
+    lineup: { scale: 1.01, drop: 0.01, aspect: 0.5211, bodyW: 0.677, headCx: 0.736, nudge: 0.08 },
     gallery: [],
     tagline:
       "A decade of screams out of the North-East, and the voice that drives First and Final.",
@@ -377,7 +380,7 @@ export const MEMBERS: Member[] = [
     accent: "#F59E0B",
     photo: "/photos/shubhra-ghosh.jpg",
     cutout: "/cutouts/shubhra-ghosh.png",
-    lineup: { scale: 1.02, drop: 0.02, aspect: 0.447, bodyW: 0.747, headCx: 0.271 },
+    lineup: { scale: 1.02, drop: 0.02, aspect: 0.447, bodyW: 0.747, headCx: 0.271, gapBefore: 0.05 },
     gallery: [
       "/photos/gallery/shubhra-ghosh/01.jpg",
       "/photos/gallery/shubhra-ghosh/02.jpg",

@@ -145,7 +145,8 @@ lineup: { scale: 1.02, drop: 0.02, aspect: 0.3766, bodyW: 0.835, headCx: 0.745 }
 | `aspect` | the PNG's width ÷ height |
 | `bodyW` | width of the person — torso plus instrument body, *excluding* the neck and headstock — as a fraction of the PNG width. Sets how much floor they occupy. |
 | `headCx` | where their head sits across the PNG, 0–1. The figure is positioned so this lands on the slot's centre, i.e. directly over their name. |
-| `nudge` | optional manual offset in `--fig` units, applied after centring. Positive moves right. Arnold is bent forward with his legs sprawling left of his head, so head-centring left his mass sitting left of his name. |
+| `nudge` | optional manual offset in `--fig` units, applied after centring. Positive moves right. Arnold leans with his knee out to the left, so head-centring left his mass sitting left of his name. |
+| `gapBefore` | optional extra space before this member, in `--fig` units. Used to give the three guitarists a little air without loosening the whole row — `AIR` would space everyone. |
 
 **Measure head WIDTH, not head height.** Head height was tried and produced two
 visibly wrong passes. It's inflated by hair (Riyan's covers his face entirely) and by

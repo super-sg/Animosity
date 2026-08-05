@@ -135,7 +135,9 @@ export type Member = {
   lineup: {
     /** height multiplier that equalises HEAD WIDTH across the line-up */
     scale: number;
-    /** vertical slide, applied after scaling, so the crowns align. = scale − 1 */
+    /** vertical slide applied after scaling. `scale − 1` puts their crown on the
+     *  common line; raise it above that to deliberately sit someone lower, as
+     *  Arnold is — he's crouching, so lining his crown up made him float. */
     drop: number;
     /** the PNG's width ÷ height */
     aspect: number;
@@ -181,7 +183,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/harsh-roy.jpg",
     cutout: "/cutouts/harsh-roy.png",
-    lineup: { scale: 0.93, drop: -0.07, aspect: 0.8266, bodyW: 0.512, headCx: 0.396, gapBefore: 0.05 },
+    lineup: { scale: 0.93, drop: -0.07, aspect: 0.8266, bodyW: 0.512, headCx: 0.396, nudge: 0.06, gapBefore: 0.05 },
     gallery: [
       "/photos/gallery/harsh-roy/01.jpg",
       "/photos/gallery/harsh-roy/02.jpg",
@@ -305,7 +307,7 @@ export const MEMBERS: Member[] = [
     accent: "#22C55E",
     photo: "/photos/arnold-singh.jpg",
     cutout: "/cutouts/arnold-singh.png",
-    lineup: { scale: 0.9, drop: -0.1, aspect: 0.5211, bodyW: 0.677, headCx: 0.736, nudge: 0.06 },
+    lineup: { scale: 0.9, drop: 0.0, aspect: 0.5211, bodyW: 0.677, headCx: 0.736, nudge: 0.13 },
     gallery: [],
     tagline:
       "A decade of screams out of the North-East, and the voice that drives First and Final.",

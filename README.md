@@ -141,7 +141,7 @@ lineup: { scale: 1.02, drop: 0.02, aspect: 0.3766, bodyW: 0.835, headCx: 0.745 }
 | Field | Meaning |
 |---|---|
 | `scale` | height multiplier that equalises **head WIDTH** across the line-up |
-| `drop` | vertical slide applied after scaling, so the crowns align. Always `scale − 1` |
+| `drop` | vertical slide applied after scaling. `scale − 1` puts their crown on the common line; raise it above that to sit someone lower on purpose. Arnold is at `0.0` against a scale of `0.9` — he's crouching, so aligning his crown left him floating. |
 | `aspect` | the PNG's width ÷ height |
 | `bodyW` | width of the person — torso plus instrument body, *excluding* the neck and headstock — as a fraction of the PNG width. Sets how much floor they occupy. |
 | `headCx` | where their head sits across the PNG, 0–1. The figure is positioned so this lands on the slot's centre, i.e. directly over their name. |

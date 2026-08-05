@@ -190,7 +190,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/harsh-roy.jpg",
     cutout: "/cutouts/harsh-roy.png",
-    lineup: { scale: 1.18, drop: 0.18, aspect: 0.7793, bodyW: 0.4395, headCx: 0.3703, nudge: 0.06, gapBefore: 0.05 },
+    lineup: { scale: 1.0, drop: 0.0, aspect: 0.7451, bodyW: 0.4336, headCx: 0.373, nudge: 0.06 },
     gallery: [
       "/photos/gallery/harsh-roy/01.jpg",
       "/photos/gallery/harsh-roy/02.jpg",
@@ -273,7 +273,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/mathias-oundo.jpg",
     cutout: "/cutouts/mathias-oundo.png",
-    lineup: { scale: 0.99, drop: -0.01, aspect: 0.6629, bodyW: 0.62, headCx: 0.512 },
+    lineup: { scale: 0.99, drop: -0.01, aspect: 0.6629, bodyW: 0.62, headCx: 0.512, gapBefore: 0.07 },
     gallery: [
       "/photos/gallery/mathias-oundo/01.jpg",
       "/photos/gallery/mathias-oundo/02.jpg",
@@ -389,7 +389,7 @@ export const MEMBERS: Member[] = [
     accent: "#F59E0B",
     photo: "/photos/shubhra-ghosh.jpg",
     cutout: "/cutouts/shubhra-ghosh.png",
-    lineup: { scale: 1.02, drop: 0.02, aspect: 0.447, bodyW: 0.747, headCx: 0.271, gapBefore: 0.05 },
+    lineup: { scale: 1.02, drop: 0.02, aspect: 0.447, bodyW: 0.747, headCx: 0.271 },
     gallery: [
       "/photos/gallery/shubhra-ghosh/01.jpg",
       "/photos/gallery/shubhra-ghosh/02.jpg",
@@ -426,7 +426,7 @@ export const MEMBERS: Member[] = [
     accent: "#3B82F6",
     photo: "/photos/yuvraaj-rawat.jpg",
     cutout: "/cutouts/yuvraaj-rawat.png",
-    lineup: { scale: 1.16, drop: 0.16, aspect: 0.4955, bodyW: 0.8144, headCx: 0.4185, nudge: 0.13, fadeFrom: 46 },
+    lineup: { scale: 1.16, drop: 0.16, aspect: 0.4955, bodyW: 0.8144, headCx: 0.4185, fadeFrom: 46 },
     gallery: [
       "/photos/gallery/yuvraaj-rawat/01.jpg",
       "/photos/gallery/yuvraaj-rawat/02.jpg",
@@ -470,7 +470,7 @@ export const MEMBERS: Member[] = [
     accent: "#8B5CF6",
     photo: "/photos/aditya-singh.jpg",
     cutout: "/cutouts/aditya-singh.png",
-    lineup: { scale: 0.8, drop: -0.2, aspect: 0.7689, bodyW: 0.603, headCx: 0.356 },
+    lineup: { scale: 0.8, drop: -0.2, aspect: 0.7689, bodyW: 0.603, headCx: 0.356, gapBefore: 0.1 },
     gallery: [],
     tagline:
       "The youngest in the room, writing bass parts nobody asked for and everybody kept.",
@@ -509,8 +509,8 @@ export const LINEUP_ORDER = [
   "harsh-roy",
   "arnold-singh",
   "mathias-oundo",
-  "partho-roy",
   "yuvraaj-rawat",
+  "partho-roy",
   "aditya-singh",
 ] as const;
 

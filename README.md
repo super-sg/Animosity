@@ -146,9 +146,16 @@ lineup: { scale: 1.02, drop: 0.02, aspect: 0.3766, bodyW: 0.835, headCx: 0.745 }
 | `bodyW` | width of the person — torso plus instrument body, *excluding* the neck and headstock — as a fraction of the PNG width. Sets how much floor they occupy. |
 | `headCx` | where their head sits across the PNG, 0–1. The figure is positioned so this lands on the slot's centre, i.e. directly over their name. |
 | `nudge` | optional manual offset in `--fig` units, applied after centring. Positive moves right. Arnold leans with his knee out to the left, so head-centring left his mass sitting left of his name. |
-| `gapBefore` | optional extra space before this member, in `--fig` units. Used to give the three guitarists a little air without loosening the whole row — `AIR` would space everyone. |
+| `gapBefore` | optional extra space before this member, in `--fig` units, for when one pair needs air but the row doesn't. Mathias has one so the two singers aren't shoulder to shoulder; Aditya has one so Partho's headstock clears his face. |
 | `layer` | optional stacking override. Members default to drawing left-over-right at `(count − index) × 10`. Raise it to lift someone above a neighbour. Currently unused — the drummer's face is cleared by moving him rather than restacking, so Partho's headstock stays visible. |
 | `fadeFrom` | where the bottom fade starts, as a percentage of the figure. Default `80`. Lower it to dissolve something the cut-out ends abruptly on — Yuvraaj's drum kit is cut mid-shell in the source, so his is `46`. |
+
+**Measure the head-width band from image WIDTH, never from image height.** A band sized
+as a fraction of height shrinks when you crop the legs off, which shrinks the measured
+head, which makes you scale the person *up* — Harsh was pushed to 1.3 that way when he
+belonged at 1.0. Width is untouched by a vertical crop, so a width-derived band gives
+the same answer at any framing. With that fixed, matching someone's framing to the rest
+is one step: crop them to `headW / target(headW/H)` tall.
 
 **Measure head WIDTH, not head height.** Head height was tried and produced two
 visibly wrong passes. It's inflated by hair (Riyan's covers his face entirely) and by

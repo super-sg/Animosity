@@ -190,7 +190,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/harsh-roy.jpg",
     cutout: "/cutouts/harsh-roy.png",
-    lineup: { scale: 1.0, drop: 0.0, aspect: 0.7451, bodyW: 0.4336, headCx: 0.373, nudge: 0.06 },
+    lineup: { scale: 1.0, drop: 0.0, aspect: 0.7451, bodyW: 0.4336, headCx: 0.373, nudge: 0.06 , gapBefore: 0.07 },
     gallery: [
       "/photos/gallery/harsh-roy/01.jpg",
       "/photos/gallery/harsh-roy/02.jpg",
@@ -232,7 +232,7 @@ export const MEMBERS: Member[] = [
     accent: "#F97316",
     photo: "/photos/partho-roy.jpg",
     cutout: "/cutouts/partho-roy.png",
-    lineup: { scale: 1.0, drop: 0.0, aspect: 0.6826, bodyW: 0.484, headCx: 0.386 },
+    lineup: { scale: 1.0, drop: 0.0, aspect: 0.6826, bodyW: 0.484, headCx: 0.386, nudge: -0.05 },
     gallery: [
       "/photos/gallery/partho-roy/01.jpg",
       "/photos/gallery/partho-roy/02.jpg",
@@ -273,7 +273,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/mathias-oundo.jpg",
     cutout: "/cutouts/mathias-oundo.png",
-    lineup: { scale: 0.99, drop: -0.01, aspect: 0.6629, bodyW: 0.62, headCx: 0.512, gapBefore: 0.07 },
+    lineup: { scale: 0.99, drop: -0.01, aspect: 0.6629, bodyW: 0.62, headCx: 0.512 , gapBefore: 0.05 },
     gallery: [
       "/photos/gallery/mathias-oundo/01.jpg",
       "/photos/gallery/mathias-oundo/02.jpg",
@@ -314,7 +314,7 @@ export const MEMBERS: Member[] = [
     accent: "#22C55E",
     photo: "/photos/arnold-singh.jpg",
     cutout: "/cutouts/arnold-singh.png",
-    lineup: { scale: 0.9, drop: 0.0, aspect: 0.5211, bodyW: 0.677, headCx: 0.736, nudge: 0.13 },
+    lineup: { scale: 0.9, drop: 0.0, aspect: 0.5211, bodyW: 0.677, headCx: 0.736, nudge: 0.13 , gapBefore: 0.06 },
     gallery: [],
     tagline:
       "A decade of screams out of the North-East, and the voice that drives First and Final.",
@@ -389,7 +389,7 @@ export const MEMBERS: Member[] = [
     accent: "#F59E0B",
     photo: "/photos/shubhra-ghosh.jpg",
     cutout: "/cutouts/shubhra-ghosh.png",
-    lineup: { scale: 1.02, drop: 0.02, aspect: 0.447, bodyW: 0.747, headCx: 0.271 },
+    lineup: { scale: 1.02, drop: 0.02, aspect: 0.447, bodyW: 0.747, headCx: 0.271 , gapBefore: 0.07 },
     gallery: [
       "/photos/gallery/shubhra-ghosh/01.jpg",
       "/photos/gallery/shubhra-ghosh/02.jpg",
@@ -470,7 +470,7 @@ export const MEMBERS: Member[] = [
     accent: "#8B5CF6",
     photo: "/photos/aditya-singh.jpg",
     cutout: "/cutouts/aditya-singh.png",
-    lineup: { scale: 0.8, drop: -0.2, aspect: 0.7689, bodyW: 0.603, headCx: 0.356, gapBefore: 0.1 },
+    lineup: { scale: 0.8, drop: -0.2, aspect: 0.7689, bodyW: 0.603, headCx: 0.356 , gapBefore: 0.05 },
     gallery: [],
     tagline:
       "The youngest in the room, writing bass parts nobody asked for and everybody kept.",

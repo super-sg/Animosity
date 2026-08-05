@@ -154,6 +154,11 @@ export type Member = {
     /** optional extra space before this member, in --fig units. Used to give
      *  the three guitarists a little air rather than spacing the whole row. */
     gapBefore?: number;
+    /** optional stacking override. Members default to drawing left-over-right
+     *  (×10, so there's room between them). Raise this to lift someone above a
+     *  neighbour whose instrument would otherwise cross their face — Partho's
+     *  bass headstock lands squarely on Yuvraaj's. */
+    layer?: number;
   };
   /** every other supplied shot of them, shown as a strip on their page */
   gallery: string[];
@@ -419,7 +424,7 @@ export const MEMBERS: Member[] = [
     accent: "#3B82F6",
     photo: "/photos/yuvraaj-rawat.jpg",
     cutout: "/cutouts/yuvraaj-rawat.png",
-    lineup: { scale: 1.02, drop: 0.02, aspect: 0.4993, bodyW: 0.885, headCx: 0.419 },
+    lineup: { scale: 1.02, drop: 0.02, aspect: 0.4993, bodyW: 0.885, headCx: 0.419, layer: 35 },
     gallery: [
       "/photos/gallery/yuvraaj-rawat/01.jpg",
       "/photos/gallery/yuvraaj-rawat/02.jpg",

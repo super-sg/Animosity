@@ -196,7 +196,7 @@ export default function HeroLineup() {
                 key={member.slug}
                 className="relative shrink-0 snap-center"
                 style={{
-                  zIndex: lit ? 30 : LINEUP.length - i,
+                  zIndex: lit ? 999 : (member.lineup.layer ?? (LINEUP.length - i) * 10),
                   marginLeft: member.lineup.gapBefore
                     ? `calc(var(--fig) * ${member.lineup.gapBefore})`
                     : undefined,

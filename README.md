@@ -147,6 +147,7 @@ lineup: { scale: 1.02, drop: 0.02, aspect: 0.3766, bodyW: 0.835, headCx: 0.745 }
 | `headCx` | where their head sits across the PNG, 0–1. The figure is positioned so this lands on the slot's centre, i.e. directly over their name. |
 | `nudge` | optional manual offset in `--fig` units, applied after centring. Positive moves right. Arnold leans with his knee out to the left, so head-centring left his mass sitting left of his name. |
 | `gapBefore` | optional extra space before this member, in `--fig` units. Used to give the three guitarists a little air without loosening the whole row — `AIR` would space everyone. |
+| `layer` | optional stacking override. Members default to drawing left-over-right at `(count − index) × 10`. Raise it to lift someone above a neighbour whose instrument crosses their face. Yuvraaj is at `35` (above Partho's `30`) because Partho's bass headstock landed squarely on his nose. |
 
 **Measure head WIDTH, not head height.** Head height was tried and produced two
 visibly wrong passes. It's inflated by hair (Riyan's covers his face entirely) and by

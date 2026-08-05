@@ -183,7 +183,7 @@ export default function HeroLineup() {
           onMouseLeave={() => setHovered(null)}
         >
           {LINEUP.map((member, i) => {
-            const { scale, drop, headCx, nudge = 0 } = member.lineup;
+            const { scale, drop, headCx, nudge = 0, fadeFrom = 80 } = member.lineup;
             const slotW = slotUnits(member);
             const imgW = imageUnits(member);
             // put their head on the slot's centre line, i.e. over their name
@@ -223,10 +223,15 @@ export default function HeroLineup() {
                       clipPath: "inset(-100vh -100vw 0 -100vw)",
                     }}
                   >
-                    {/* accent pool at their feet */}
+                    {/* Accent pool at their feet. A radial gradient, not a
+                        blurred rectangle — the slot clips dead straight along the
+                        floor, and a rectangle's bottom edge showed through that
+                        clip as a hard line the moment you hovered. */}
                     <span
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-24 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-80"
-                      style={{ background: member.accent }}
+                      className="pointer-events-none absolute inset-x-[-30%] bottom-[6%] h-32 opacity-0 transition-opacity duration-700 ease-[var(--ease-out-expo)] group-hover:opacity-70"
+                      style={{
+                        background: `radial-gradient(ellipse 50% 50% at 50% 60%, ${member.accent}, transparent 70%)`,
+                      }}
                     />
 
                     {/* pointer-events-none matters: the image spills outside the
@@ -244,8 +249,7 @@ export default function HeroLineup() {
                         transform: `translateY(calc(var(--fig) * ${drop} + ${lit ? "-0.85rem" : "0px"}))`,
                         // dissolve the bottom edge so the shorter crops don't
                         // all end on a hard horizontal cut
-                        maskImage:
-                          "linear-gradient(to bottom, #000 80%, transparent 100%)",
+                        maskImage: `linear-gradient(to bottom, #000 ${fadeFrom}%, transparent 100%)`,
                       }}
                     >
                       <Image
@@ -254,8 +258,8 @@ export default function HeroLineup() {
                         fill
                         priority={i < 4}
                         sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 18vw"
-                        className={`object-contain object-bottom drop-shadow-[0_16px_34px_rgba(0,0,0,0.85)] transition-all duration-700 ease-[var(--ease-out-expo)] ${
-                          lit ? "grayscale-0 brightness-110" : "grayscale-[0.85]"
+                        className={`object-contain object-bottom drop-shadow-[0_16px_34px_rgba(0,0,0,0.85)] transition-[filter,opacity,transform] duration-[900ms] ease-[var(--ease-out-expo)] ${
+                          lit ? "grayscale-0" : "grayscale-[0.85] brightness-[0.92]"
                         }`}
                       />
                     </span>

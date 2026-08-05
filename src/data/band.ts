@@ -155,10 +155,12 @@ export type Member = {
      *  the three guitarists a little air rather than spacing the whole row. */
     gapBefore?: number;
     /** optional stacking override. Members default to drawing left-over-right
-     *  (×10, so there's room between them). Raise this to lift someone above a
-     *  neighbour whose instrument would otherwise cross their face — Partho's
-     *  bass headstock lands squarely on Yuvraaj's. */
+     *  (×10, so there's room between them). */
     layer?: number;
+    /** where the bottom fade starts, as a percentage of the figure. Default 80.
+     *  Lower it to dissolve something the cut-out ends abruptly on — Yuvraaj's
+     *  drum kit is cut mid-shell in the source, and it's his face that matters. */
+    fadeFrom?: number;
   };
   /** every other supplied shot of them, shown as a strip on their page */
   gallery: string[];
@@ -188,7 +190,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/harsh-roy.jpg",
     cutout: "/cutouts/harsh-roy.png",
-    lineup: { scale: 0.93, drop: -0.07, aspect: 0.8266, bodyW: 0.512, headCx: 0.396, nudge: 0.06, gapBefore: 0.05 },
+    lineup: { scale: 1.18, drop: 0.18, aspect: 0.7793, bodyW: 0.4395, headCx: 0.3703, nudge: 0.06, gapBefore: 0.05 },
     gallery: [
       "/photos/gallery/harsh-roy/01.jpg",
       "/photos/gallery/harsh-roy/02.jpg",
@@ -424,7 +426,7 @@ export const MEMBERS: Member[] = [
     accent: "#3B82F6",
     photo: "/photos/yuvraaj-rawat.jpg",
     cutout: "/cutouts/yuvraaj-rawat.png",
-    lineup: { scale: 1.02, drop: 0.02, aspect: 0.4993, bodyW: 0.885, headCx: 0.419, layer: 35 },
+    lineup: { scale: 1.16, drop: 0.16, aspect: 0.4955, bodyW: 0.8144, headCx: 0.4185, nudge: 0.13, fadeFrom: 46 },
     gallery: [
       "/photos/gallery/yuvraaj-rawat/01.jpg",
       "/photos/gallery/yuvraaj-rawat/02.jpg",

@@ -83,6 +83,334 @@ export const SONGS: Song[] = [
 ];
 
 /* ================================================================== */
+/* Setlist — what actually gets played live                            */
+/* ================================================================== */
+
+export type SetTrack = {
+  slug: string;
+  title: string;
+  /** whose song it is — Animosity for the originals, the original act for covers */
+  artist: string;
+  album?: string;
+  year?: string;
+  accent: string;
+  /** what the song is, on its own terms */
+  note: string;
+  /** why it's in an Animosity set, and what it does to a room */
+  angle: string;
+  credits?: string[];
+  /** member slugs the track leans on live */
+  spotlight?: string[];
+  /**
+   * Square cover art of the original release. Apple's own artwork CDN — the
+   * `/600x600bb.jpg` suffix is swappable for any size. See `next.config.ts`
+   * for the `remotePatterns` entry that lets next/image touch it.
+   */
+  artwork?: string;
+  /** 30-second preview of the original recording, straight off Apple Music */
+  preview?: string;
+  /** the band's own video, if one is on YouTube */
+  youtubeId?: string;
+  /**
+   * The band's own live take, hosted on Google Drive. Paste either the bare
+   * file id or the whole "share" URL — `driveEmbedSrc` pulls the id out of
+   * both. The file has to be shared as "anyone with the link can view" or
+   * the embed renders a sign-in wall.
+   */
+  drive?: string;
+};
+
+export type SetGroup = {
+  id: string;
+  /** omitted when the section has only one group and needs no sub-heading */
+  label?: string;
+  badge?: string;
+  blurb?: string;
+  tracks: SetTrack[];
+};
+
+export type SetSection = {
+  id: string;
+  index: string;
+  kicker: string;
+  title: string;
+  accent: string;
+  standfirst: string;
+  groups: SetGroup[];
+};
+
+/** The originals are already described in `SONGS` — don't restate them here. */
+const ORIGINAL_TRACKS: SetTrack[] = SONGS.map((song) => ({
+  slug: song.slug,
+  title: song.title,
+  artist: "Animosity",
+  accent: song.accent,
+  note: song.story,
+  angle:
+    song.tag === "Official Music Video"
+      ? "Opens the set, every time."
+      : "Ours, start to finish — written in the room and played the way it was written.",
+  credits: song.credits,
+  spotlight: song.players,
+  youtubeId: song.youtubeId,
+}));
+
+const ENGLISH_COVERS: SetTrack[] = [
+  {
+    slug: "unholy-confessions",
+    title: "Unholy Confessions",
+    artist: "Avenged Sevenfold",
+    album: "Waking the Fallen",
+    year: "2003",
+    accent: "#E11D2E",
+    note: "The track that dragged Avenged Sevenfold out of the underground — a screamed verse bolted onto a sung chorus, over the double-kick figure that everyone recognises from the opening bar.",
+    angle:
+      "The clearest argument for the way this band is built: a trained clean voice and a growler working the same song. Avenged Sevenfold sits at the top of Harsh's influence list, so this one was never optional.",
+    spotlight: ["mathias-oundo", "arnold-singh", "harsh-roy"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/46/20/cb/4620cb89-d601-98bf-4720-869a384d5f7e/cover.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/14/e8/18/14e818d5-8b4c-f61b-89b8-66c610481eb4/mzaf_1495383565452300810.plus.aac.p.m4a",
+  },
+  {
+    slug: "hand-of-blood",
+    title: "Hand of Blood",
+    artist: "Bullet for My Valentine",
+    album: "Bullet for My Valentine EP",
+    year: "2005",
+    accent: "#F43F5E",
+    note: "Two and a half minutes with no run-up. The single that got four lads out of Bridgend and onto every metalcore compilation of the decade — it starts on a scream and never really stops.",
+    angle:
+      "The opener for a room that needs waking rather than warming. Short enough that nobody has decided what they think of the band yet when it ends.",
+    spotlight: ["arnold-singh", "riyan-gogoi"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f0/75/fc/f075fcfb-312b-4c12-9ff1-2c49473accf6/196874028872.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/b4/48/dc/b448dce6-fcca-7dc2-19b2-e3dc0f835c97/mzaf_13909177234716827860.plus.aac.p.m4a",
+  },
+  {
+    slug: "tears-dont-fall",
+    title: "Tears Don't Fall",
+    artist: "Bullet for My Valentine",
+    album: "The Poison",
+    year: "2005",
+    accent: "#3B82F6",
+    note: "A melodic chorus and a screamed hook trading places over one of the most copied lead riffs British metalcore ever produced. The song most people mean when they say they liked this band at sixteen.",
+    angle:
+      "The one where the room sings the chorus back without being asked. Mathias takes the melody, the fry comes in underneath, and the crowd handles the rest.",
+    spotlight: ["mathias-oundo", "harsh-roy", "shubhra-ghosh"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/77/12/7a/77127aeb-035f-98ed-94f7-c3e89857931b/196872258479.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/43/10/c2/4310c269-9091-bdc8-3853-c4314bf45fd6/mzaf_4422473400620439447.plus.aac.p.m4a",
+  },
+  {
+    slug: "roots-bloody-roots",
+    title: "Roots Bloody Roots",
+    artist: "Sepultura",
+    album: "Roots",
+    year: "1996",
+    accent: "#F97316",
+    note: "Barely any notes and all of the weight. Off the album Sepultura part-recorded with the Xavante people in Mato Grosso, it swapped thrash speed for downtuned groove and a percussion section you feel through the floor.",
+    angle:
+      "Yuvraaj's showcase. Everything in it is rhythm, so the kit runs the song and the guitars just lean on it — the point in the set where the pit stops being polite.",
+    spotlight: ["yuvraaj-rawat", "arnold-singh"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music/v4/a2/2f/49/a22f498d-81a9-9d1b-e85c-d5652ec811b6/016861890025.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/fd/eb/09/fdeb093b-b457-d5ff-44d9-3cbfd12c48ec/mzaf_485707390187128044.plus.aac.p.m4a",
+  },
+  {
+    slug: "silvera",
+    title: "Silvera",
+    artist: "Gojira",
+    album: "Magma",
+    year: "2016",
+    accent: "#22C55E",
+    note: "Four minutes of French technical metal with nothing spare in it — a pinch-harmonic riff, a stop-start groove, and a chorus that lands like a door closing. Nominated for Best Metal Performance at the 2017 Grammys.",
+    angle:
+      "The hardest thing in the covers set to play cleanly, and the reason Riyan was brought into the band in the first place. Lower tunings, tighter stops, no safety rails.",
+    spotlight: ["riyan-gogoi", "yuvraaj-rawat"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/24/cd/f7/24cdf7d0-279d-316e-a39c-51c35e2cce32/016861747947.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/78/f9/36/78f936d3-14bb-e6b2-bedf-1478956623f7/mzaf_3831599986626979745.plus.aac.p.m4a",
+  },
+  {
+    slug: "dream-on",
+    title: "Dream On",
+    artist: "Aerosmith",
+    album: "Aerosmith",
+    year: "1973",
+    accent: "#8B5CF6",
+    note: "The ballad from Aerosmith's first record, and still the one they are asked for. It climbs for four minutes on a single idea before Steven Tyler takes the last chorus into a scream that has almost nothing to do with the voice that started the song.",
+    angle:
+      "The tempo drop, placed on purpose. It is also the one point in the night where a decade of choir and opera training gets used for what it was actually trained for.",
+    spotlight: ["mathias-oundo"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/e2/87/d9/e287d987-7b92-7749-737f-b5b8a6913f88/22UM1IM38560.rgb.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/f8/96/43/f89643b7-3efa-9f43-0a78-394abf12864b/mzaf_3399344087154345151.plus.aac.p.m4a",
+  },
+  {
+    slug: "paradise-city",
+    title: "Paradise City",
+    artist: "Guns N' Roses",
+    album: "Appetite for Destruction",
+    year: "1987",
+    accent: "#F59E0B",
+    note: "Starts as a singalong and ends as a sprint — the last two minutes double the tempo and simply refuse to come back down. Thirty-odd years on, the whistle intro still empties the bar.",
+    angle:
+      "The encore. Nothing about it is heavy by this band's standards, which is exactly why it works after forty minutes of things that are.",
+    spotlight: ["harsh-roy", "shubhra-ghosh", "partho-roy"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/0b/2d/ec/0b2dec08-f03d-8a96-93a8-386a7d7b5091/mzaf_12821402190646617663.plus.aac.p.m4a",
+  },
+  {
+    slug: "until-i-found-you",
+    title: "Until I Found You",
+    artist: "Stephen Sanchez",
+    album: "Single",
+    year: "2022",
+    accent: "#F43F5E",
+    note: "A slow-dance ballad written in a 1950s idiom that had no business charting in 2022, and then did — carried worldwide off the back of a fifteen-second clip.",
+    angle:
+      "The outlier, and deliberately so. Proof that a band who spend most of the night at maximum volume can also get a hall completely silent.",
+    spotlight: ["mathias-oundo", "aditya-singh"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/64/d2/c5/64d2c511-67f4-ae09-5153-d39c3da413a3/21UMGIM75467.rgb.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/53/82/c1/5382c1d4-ddba-aa2b-90df-57268895fac9/mzaf_8926201202931541051.plus.aac.p.m4a",
+  },
+  {
+    slug: "mary-on-a-cross",
+    title: "Mary On a Cross",
+    artist: "Ghost",
+    album: "Seven Inches of Satanic Panic",
+    year: "2019",
+    accent: "#8B5CF6",
+    note: "Psychedelic sixties pop wearing occult-rock costume. It was a B-side nobody outside the fanbase noticed until a slowed-down edit found an audience three years later and pushed it onto the charts.",
+    angle:
+      "The crowd-pleaser that isn't heavy — melody first, theatre second, and a chorus that carries a room that has never heard of the band.",
+    spotlight: ["mathias-oundo", "shubhra-ghosh"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/20/72/d3/2072d3b2-238c-1ac2-1f6f-21f683fdc41b/24CRGIM45902.rgb.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d9/38/c1/d938c11c-3bc5-49a5-55ae-164741db1002/mzaf_16760874358478065847.plus.aac.p.m4a",
+  },
+  {
+    slug: "highway-to-hell",
+    title: "Highway to Hell",
+    artist: "AC/DC",
+    album: "Highway to Hell",
+    year: "1979",
+    accent: "#FF2D40",
+    note: "Bon Scott's last studio record with the band. Five chords, no wasted bars, and a title track built entirely out of the space between the notes.",
+    angle:
+      "The one nobody has to be taught. Play the first three chords and the room does the work — which is why it tends to close the night.",
+    spotlight: ["harsh-roy", "partho-roy", "yuvraaj-rawat"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/b9/c8/ef/b9c8ef42-bbc9-64df-11f8-717571f6730f/886443673458.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/cb/f4/3f/cbf43f47-747d-bcc2-19cf-6bf2c523f5d8/mzaf_9504019990576453182.plus.aac.p.m4a",
+  },
+];
+
+const HINDI_COVERS: SetTrack[] = [
+  {
+    slug: "naadan-parindey",
+    title: "Naadan Parindey",
+    artist: "A.R. Rahman · Mohit Chauhan",
+    album: "Rockstar (OST)",
+    year: "2011",
+    accent: "#F59E0B",
+    note: "Rahman writing a rock song rather than a film song. It opens as a folk lament and ends somewhere closer to a shout, with Mohit Chauhan holding a line that keeps climbing past where it should have stopped.",
+    angle:
+      "The Hindi request that comes in most often, and the one that suits the line-up best — Mathias's run at Hindustani classical finally earns its keep, and the band gets to play the back half at full weight.",
+    spotlight: ["mathias-oundo", "harsh-roy"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/56/ac/41/56ac41f7-99f3-3eae-3b07-443167292c4e/8902894697408_cover.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/57/52/53/57525390-c18f-7001-8d07-3f0acd0336da/mzaf_16914964021963184197.plus.aac.p.m4a",
+  },
+  {
+    slug: "kurbaan-hua",
+    title: "Kurbaan Hua",
+    artist: "Salim–Sulaiman · Vishal Dadlani",
+    album: "Kurbaan (OST)",
+    year: "2009",
+    accent: "#F97316",
+    note: "Vishal Dadlani — who spends the rest of his time fronting Pentagram — singing a title track with a rock voice over a qawwali-shaped melody and a rhythm section that is quietly a rock band.",
+    angle:
+      "The closest a Hindi film soundtrack gets to this band's natural register, so almost nothing has to be rearranged to make it fit.",
+    spotlight: ["mathias-oundo", "riyan-gogoi", "yuvraaj-rawat"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/2f/46/a8/2f46a861-e694-80e9-8a31-027977af95c7/884977367751.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/77/ce/a3/77cea37d-5efe-7cb1-7576-b3195afbc921/mzaf_5055804942054161066.plus.aac.p.m4a",
+  },
+];
+
+export const SETLIST: SetSection[] = [
+  {
+    id: "originals",
+    index: "01",
+    kicker: "Written in the room",
+    title: "Originals",
+    accent: "#E11D2E",
+    standfirst:
+      "Three songs that belong to nobody else. Lyrics by Harsh, music built across eight people in five states, and one official video shot so far.",
+    groups: [{ id: "originals-all", tracks: ORIGINAL_TRACKS }],
+  },
+  {
+    id: "covers",
+    index: "02",
+    kicker: "Everything else we'll play",
+    title: "Covers",
+    accent: "#F97316",
+    standfirst:
+      "Twelve songs the band has taken apart and put back together — the ones that built everyone's playing in the first place, plus two in Hindi that only come out when a room asks for them.",
+    groups: [
+      {
+        id: "covers-english",
+        label: "English",
+        blurb:
+          "The standing set. Metalcore, groove metal, and three rock songs old enough to be nobody's guilty pleasure.",
+        tracks: ENGLISH_COVERS,
+      },
+      {
+        id: "covers-hindi",
+        label: "Hindi",
+        badge: "On special demand",
+        blurb:
+          "Not in the standard set. Ask for them at the booking stage and they go in — both are rehearsed and ready.",
+        tracks: HINDI_COVERS,
+      },
+    ],
+  },
+];
+
+export const SETLIST_COUNTS = {
+  originals: ORIGINAL_TRACKS.length,
+  english: ENGLISH_COVERS.length,
+  hindi: HINDI_COVERS.length,
+  total: ORIGINAL_TRACKS.length + ENGLISH_COVERS.length + HINDI_COVERS.length,
+};
+
+/**
+ * Google Drive share links come in several shapes (`/file/d/<id>/view`,
+ * `?id=<id>`, or just the id pasted on its own). Every one of them contains
+ * the id as the only long run of URL-safe characters, so one pattern covers
+ * the lot.
+ */
+export const driveEmbedSrc = (ref: string) => {
+  const id = ref.match(/[-\w]{25,}/)?.[0] ?? ref;
+  return `https://drive.google.com/file/d/${id}/preview`;
+};
+
+/* ================================================================== */
 /* Achievements                                                        */
 /* ================================================================== */
 
@@ -232,7 +560,7 @@ export const MEMBERS: Member[] = [
     accent: "#F97316",
     photo: "/photos/partho-roy.jpg",
     cutout: "/cutouts/partho-roy.png",
-    lineup: { scale: 1.0, drop: 0.0, aspect: 0.6826, bodyW: 0.484, headCx: 0.386, nudge: -0.05, layer: 25 },
+    lineup: { scale: 1.0, drop: 0.0, aspect: 0.6826, bodyW: 0.484, headCx: 0.386, nudge: -0.05, layer: 35 },
     gallery: [
       "/photos/gallery/partho-roy/01.jpg",
       "/photos/gallery/partho-roy/02.jpg",
@@ -470,7 +798,7 @@ export const MEMBERS: Member[] = [
     accent: "#8B5CF6",
     photo: "/photos/aditya-singh.jpg",
     cutout: "/cutouts/aditya-singh.png",
-    lineup: { scale: 0.8, drop: -0.2, aspect: 0.7689, bodyW: 0.603, headCx: 0.356 , gapBefore: 0.05 },
+    lineup: { scale: 0.8, drop: -0.2, aspect: 0.7689, bodyW: 0.603, headCx: 0.356, gapBefore: 0.05 },
     gallery: [],
     tagline:
       "The youngest in the room, writing bass parts nobody asked for and everybody kept.",
@@ -511,6 +839,7 @@ export const LINEUP_ORDER = [
   "mathias-oundo",
   "yuvraaj-rawat",
   "partho-roy",
+  "aditya-singh",
 ] as const;
 
 export const LINEUP: Member[] = LINEUP_ORDER.map((slug) => {
@@ -658,6 +987,7 @@ export const RIDER = [
 
 export const NAV = [
   { label: "Music", href: "/#music" },
+  { label: "Setlist", href: "/setlist" },
   { label: "History", href: "/history" },
   { label: "Members", href: "/members" },
   { label: "Book Us", href: "/#booking" },

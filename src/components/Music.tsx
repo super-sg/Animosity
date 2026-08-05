@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { SONGS } from "@/data/band";
@@ -22,10 +23,18 @@ export default function Music() {
             <br />
             <span className="text-blood">Originals</span>
           </h2>
-          <p className="max-w-sm pb-3 text-base leading-relaxed text-dust">
-            Written in-house — lyrics by Harsh, music built in the room, and one
-            official video shot so far. Open a track to read where it came from.
-          </p>
+          <div className="max-w-sm pb-3">
+            <p className="text-base leading-relaxed text-dust">
+              Written in-house — lyrics by Harsh, music built in the room, and one
+              official video shot so far. Open a track to read where it came from.
+            </p>
+            <Link href="/setlist" className="group mt-5 inline-flex items-center gap-3">
+              <span className="label text-bone transition-colors group-hover:text-blood">
+                Everything we play live
+              </span>
+              <span className="block h-px w-8 bg-bone/40 transition-all duration-500 ease-[var(--ease-out-expo)] group-hover:w-14 group-hover:bg-blood" />
+            </Link>
+          </div>
         </Reveal>
       </div>
 

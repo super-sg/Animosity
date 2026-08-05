@@ -485,6 +485,9 @@ export type Member = {
     /** optional stacking override. Members default to drawing left-over-right
      *  (×10, so there's room between them). */
     layer?: number;
+    /** per-member brightness multiplier, default 1. Some cut-outs were shot far
+     *  darker than the rest — Harsh's stage lighting is much lower than Riyan's. */
+    tone?: number;
     /** where the bottom fade starts, as a percentage of the figure. Default 80.
      *  Lower it to dissolve something the cut-out ends abruptly on — Yuvraaj's
      *  drum kit is cut mid-shell in the source, and it's his face that matters. */
@@ -518,7 +521,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/harsh-roy.jpg",
     cutout: "/cutouts/harsh-roy.png",
-    lineup: { scale: 1.0, drop: 0.0, aspect: 0.7451, bodyW: 0.4336, headCx: 0.373, nudge: 0.06, gapBefore: 0.05 },
+    lineup: { scale: 1.0, drop: 0.0, aspect: 0.7451, bodyW: 0.4336, headCx: 0.373, nudge: 0.06, gapBefore: 0.05, tone: 1.22 },
     gallery: [
       "/photos/gallery/harsh-roy/01.jpg",
       "/photos/gallery/harsh-roy/02.jpg",

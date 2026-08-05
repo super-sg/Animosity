@@ -160,6 +160,7 @@ lineup: { scale: 1.02, drop: 0.02, aspect: 0.3766, bodyW: 0.835, headCx: 0.745 }
 | `nudge` | optional manual offset in `--fig` units, applied after centring. Positive moves right. Arnold leans with his knee out to the left, so head-centring left his mass sitting left of his name. |
 | `gapBefore` | optional extra space before this member, in `--fig` units, for when one pair needs air but the row doesn't. Mathias has one so the two singers aren't shoulder to shoulder; Aditya has one so Partho's headstock clears his face. |
 | `layer` | optional stacking override. Members default to drawing left-over-right at `(count − index) × 10`. Raise it to lift someone above a neighbour. Currently unused — the drummer's face is cleared by moving him rather than restacking, so Partho's headstock stays visible. |
+| `tone` | per-member brightness multiplier, default `1`. Some cut-outs were shot far darker than the rest — Harsh is at `1.22`. It feeds a `--tone` CSS variable, and the hover lift multiplies it rather than replacing it, so a dark member still brightens on hover. |
 | `fadeFrom` | where the bottom fade starts, as a percentage of the figure. Default `80`. Lower it to dissolve something the cut-out ends abruptly on — Yuvraaj's drum kit is cut mid-shell in the source, so his is `46`. |
 
 **Measure the head-width band from image WIDTH, never from image height.** A band sized

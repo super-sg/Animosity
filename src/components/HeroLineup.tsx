@@ -116,7 +116,7 @@ export default function HeroLineup() {
       {/* Whoever is hovered washes the whole stage in their accent colour */}
       <motion.div
         className="pointer-events-none absolute inset-0 -z-10"
-        animate={{ opacity: active ? 0.42 : 0 }}
+        animate={{ opacity: active ? 0.5 : 0 }}
         transition={{ duration: 0.6, ease: EASE }}
         style={{
           background: active
@@ -183,7 +183,7 @@ export default function HeroLineup() {
           onMouseLeave={() => setHovered(null)}
         >
           {LINEUP.map((member, i) => {
-            const { scale, drop, headCx, nudge = 0, fadeFrom = 80 } = member.lineup;
+            const { scale, drop, headCx, nudge = 0, fadeFrom = 80, tone = 1 } = member.lineup;
             const slotW = slotUnits(member);
             const imgW = imageUnits(member);
             // put their head on the slot's centre line, i.e. over their name
@@ -228,9 +228,9 @@ export default function HeroLineup() {
                         floor, and a rectangle's bottom edge showed through that
                         clip as a hard line the moment you hovered. */}
                     <span
-                      className="pointer-events-none absolute inset-x-[-30%] bottom-[6%] h-32 opacity-0 transition-opacity duration-700 ease-[var(--ease-out-expo)] group-hover:opacity-70"
+                      className="pointer-events-none absolute inset-x-[-30%] bottom-[6%] h-32 opacity-0 transition-opacity duration-700 ease-[var(--ease-out-expo)] group-hover:opacity-95"
                       style={{
-                        background: `radial-gradient(ellipse 50% 50% at 50% 60%, ${member.accent}, transparent 70%)`,
+                        background: `radial-gradient(ellipse 55% 55% at 50% 60%, ${member.accent}, transparent 72%)`,
                       }}
                     />
 
@@ -250,6 +250,7 @@ export default function HeroLineup() {
                         // dissolve the bottom edge so the shorter crops don't
                         // all end on a hard horizontal cut
                         maskImage: `linear-gradient(to bottom, #000 ${fadeFrom}%, transparent 100%)`,
+                        ...({ "--tone": tone } as React.CSSProperties),
                       }}
                     >
                       <Image
@@ -259,7 +260,9 @@ export default function HeroLineup() {
                         priority={i < 4}
                         sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 18vw"
                         className={`object-contain object-bottom drop-shadow-[0_16px_34px_rgba(0,0,0,0.85)] transition-[filter,opacity,transform] duration-[900ms] ease-[var(--ease-out-expo)] ${
-                          lit ? "grayscale-0" : "grayscale-[0.85] brightness-[0.92]"
+                          lit
+                            ? "grayscale-0 brightness-[calc(var(--tone)*1.12)] saturate-[1.15]"
+                            : "grayscale-[0.85] brightness-[var(--tone)]"
                         }`}
                       />
                     </span>

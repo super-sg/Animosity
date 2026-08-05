@@ -167,18 +167,21 @@ export default function HistoryChapters() {
           </section>
         ))}
 
-        <motion.p
-          className="mt-4 border-l-2 border-amber/60 bg-amber/5 py-3 pl-4 text-xs leading-relaxed text-amber/90"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: EASE }}
-        >
-          These chapters are reconstructed from the media kit — the people and the
-          results are real, the ordering and framing are not yet confirmed by the band.
-          Dates in particular are missing. Edit <code className="font-mono">HISTORY</code>{" "}
-          in <code className="font-mono">src/data/band.ts</code>.
-        </motion.p>
+        {HISTORY.some((chapter) => chapter.isPlaceholder) && (
+          <motion.p
+            className="mt-4 border-l-2 border-amber/60 bg-amber/5 py-3 pl-4 text-xs leading-relaxed text-amber/90"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: EASE }}
+          >
+            Some chapters are still reconstructed from the media kit — the people and
+            the results are real, the ordering and framing are not yet confirmed by the
+            band. Dates in particular are missing. Edit{" "}
+            <code className="font-mono">HISTORY</code> in{" "}
+            <code className="font-mono">src/data/band.ts</code>.
+          </motion.p>
+        )}
       </div>
     </div>
   );

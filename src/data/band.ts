@@ -190,7 +190,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/harsh-roy.jpg",
     cutout: "/cutouts/harsh-roy.png",
-    lineup: { scale: 1.0, drop: 0.0, aspect: 0.7451, bodyW: 0.4336, headCx: 0.373, nudge: 0.06 , gapBefore: 0.07 },
+    lineup: { scale: 1.0, drop: 0.0, aspect: 0.7451, bodyW: 0.4336, headCx: 0.373, nudge: 0.06, gapBefore: 0.05 },
     gallery: [
       "/photos/gallery/harsh-roy/01.jpg",
       "/photos/gallery/harsh-roy/02.jpg",
@@ -232,7 +232,7 @@ export const MEMBERS: Member[] = [
     accent: "#F97316",
     photo: "/photos/partho-roy.jpg",
     cutout: "/cutouts/partho-roy.png",
-    lineup: { scale: 1.0, drop: 0.0, aspect: 0.6826, bodyW: 0.484, headCx: 0.386, nudge: -0.05 },
+    lineup: { scale: 1.0, drop: 0.0, aspect: 0.6826, bodyW: 0.484, headCx: 0.386, nudge: -0.05, layer: 25 },
     gallery: [
       "/photos/gallery/partho-roy/01.jpg",
       "/photos/gallery/partho-roy/02.jpg",
@@ -273,7 +273,7 @@ export const MEMBERS: Member[] = [
     accent: "#E11D2E",
     photo: "/photos/mathias-oundo.jpg",
     cutout: "/cutouts/mathias-oundo.png",
-    lineup: { scale: 0.99, drop: -0.01, aspect: 0.6629, bodyW: 0.62, headCx: 0.512 , gapBefore: 0.05 },
+    lineup: { scale: 0.99, drop: -0.01, aspect: 0.6629, bodyW: 0.62, headCx: 0.512, gapBefore: 0.04 },
     gallery: [
       "/photos/gallery/mathias-oundo/01.jpg",
       "/photos/gallery/mathias-oundo/02.jpg",
@@ -314,7 +314,7 @@ export const MEMBERS: Member[] = [
     accent: "#22C55E",
     photo: "/photos/arnold-singh.jpg",
     cutout: "/cutouts/arnold-singh.png",
-    lineup: { scale: 0.9, drop: 0.0, aspect: 0.5211, bodyW: 0.677, headCx: 0.736, nudge: 0.13 , gapBefore: 0.06 },
+    lineup: { scale: 0.9, drop: 0.0, aspect: 0.5211, bodyW: 0.677, headCx: 0.736, nudge: 0.13, gapBefore: 0.04 },
     gallery: [],
     tagline:
       "A decade of screams out of the North-East, and the voice that drives First and Final.",
@@ -389,7 +389,7 @@ export const MEMBERS: Member[] = [
     accent: "#F59E0B",
     photo: "/photos/shubhra-ghosh.jpg",
     cutout: "/cutouts/shubhra-ghosh.png",
-    lineup: { scale: 1.02, drop: 0.02, aspect: 0.447, bodyW: 0.747, headCx: 0.271 , gapBefore: 0.07 },
+    lineup: { scale: 1.02, drop: 0.02, aspect: 0.447, bodyW: 0.747, headCx: 0.271, gapBefore: 0.05 },
     gallery: [
       "/photos/gallery/shubhra-ghosh/01.jpg",
       "/photos/gallery/shubhra-ghosh/02.jpg",
@@ -511,7 +511,6 @@ export const LINEUP_ORDER = [
   "mathias-oundo",
   "yuvraaj-rawat",
   "partho-roy",
-  "aditya-singh",
 ] as const;
 
 export const LINEUP: Member[] = LINEUP_ORDER.map((slug) => {
@@ -540,15 +539,17 @@ export const HISTORY: Chapter[] = [
   {
     id: "origin",
     marker: "Chapter I",
-    title: "The Founding",
-    standfirst: "A name before a song.",
+    title: "Named on the Bus",
+    standfirst: "A name before there was a band, and a debut that got what it deserved.",
     body: [
-      "Animosity starts in Greater Noida with Harsh on guitar and Partho on bass — one a guitarist since 2018 with a clear idea of the direction, the other already five years deep in professional live music, set design and console work. Yuvraaj is behind the kit from the very first rehearsal.",
-      "The name comes first. Animosity: the feeling of angst, of rebellion, of belonging to a higher cause. Everything after that is an attempt to build a sound that earns it.",
+      "Sharda University's music club is going to Antaragni at IIT Kanpur. The funding for the trip stays uncertain almost to the day it leaves, so nobody prepares anything and nobody is told much in advance. They simply get on the bus.",
+      "Somewhere on the road, an invitation comes through: Synchronicity, the fest's metal competition. Whoever happens to be on that bus is now a band, and a band needs a name before it reaches the stage. The name is Animosity — angst, rebellion, belonging to a higher cause. Then they walk on without a single rehearsal between them and take the set apart. Predictably.",
+      "The fallout splits the group. The Allfather spends Revelations '23 looking for fresh blood and rebuilds Animosity around one stated target: win the same competition the following year.",
+      "The second decision is the one that lasts. No more fusing genres and hoping something sticks — pick one heavy genre and do it better than anyone else in the room, a hot knife through butter. The first call goes to the most gifted musician ever to set foot in Greater Noida, by the Allfather's reckoning, and a man the university's own music club never made room for. Mathias used to hang around the arcade outside it; the Allfather used to play pool with him. A few off-ramp jam sessions settled it. Before the bus ever left for Kanpur, he had already been told: when I'm back, we're forming a band.",
     ],
     photo: "/photos/band-stage-red.jpg",
-    cast: ["harsh-roy", "partho-roy", "yuvraaj-rawat"],
-    isPlaceholder: true,
+    cast: ["harsh-roy", "partho-roy"],
+    isPlaceholder: false,
   },
   {
     id: "voices",

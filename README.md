@@ -36,8 +36,11 @@ Change it there and every route follows — no component edits needed.
 | Technical rider | `RIDER` |
 | Nav links | `NAV` |
 
-Adding a member to `MEMBERS` automatically creates their page, adds them to the
-line-up, the grid, the origins list and the prev/next rings.
+Adding a member to `MEMBERS` automatically creates their page, adds them to the grid,
+the origins list and the prev/next rings. The landing-page line-up is a separate list —
+see `LINEUP_ORDER` below — so a member can be left out of the hero without disappearing
+from the site. Aditya currently is: he's the only one still on a media-kit crop with no
+body below the waist, and he wouldn't stand level with the supplied full cut-outs.
 
 ### ⚠️ Still needs the band
 

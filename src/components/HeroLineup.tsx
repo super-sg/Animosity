@@ -11,7 +11,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 /** Body-to-body pitch as a multiple of body width. Below 1 the bodies overlap,
  *  which is what a band standing shoulder to shoulder actually looks like. */
-const AIR = 0.91;
+const AIR = 1.06;
 
 /**
  * A member's slot is only as wide as their BODY — their guitar hangs outside it

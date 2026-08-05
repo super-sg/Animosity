@@ -305,7 +305,7 @@ export const MEMBERS: Member[] = [
     accent: "#22C55E",
     photo: "/photos/arnold-singh.jpg",
     cutout: "/cutouts/arnold-singh.png",
-    lineup: { scale: 1.01, drop: 0.01, aspect: 0.5211, bodyW: 0.677, headCx: 0.736, nudge: 0.08 },
+    lineup: { scale: 0.9, drop: -0.1, aspect: 0.5211, bodyW: 0.677, headCx: 0.736, nudge: 0.06 },
     gallery: [],
     tagline:
       "A decade of screams out of the North-East, and the voice that drives First and Final.",

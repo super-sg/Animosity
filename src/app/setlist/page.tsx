@@ -9,7 +9,7 @@ import { BAND, SETLIST_COUNTS } from "@/data/band";
 export const metadata: Metadata = {
   title: "Setlist",
   description:
-    "Everything Animosity plays live — three originals, ten English covers from Avenged Sevenfold to AC/DC, and two Hindi tracks on special demand. Hear each original recording and read what it does to a room.",
+    "Everything Animosity plays live — three originals, eleven English covers from Avenged Sevenfold to Iron Maiden to AC/DC, and two Hindi tracks on special demand. Hear each original recording and read what it does to a room.",
   alternates: { canonical: "/setlist" },
 };
 
@@ -19,7 +19,7 @@ export default function SetlistPage() {
       <PageHeader
         eyebrow="Live repertoire"
         title={["What we", "play live"]}
-        standfirst="Three songs that are ours and twelve that aren't — every one of them opened up below, with the original recording to hear it against and our own footage where we have it."
+        standfirst="Three songs that are ours and thirteen that aren't — every one of them opened up below, with the original recording to hear it against and our own footage where we have it."
         photo="/photos/live-cokestudio.jpg"
         accent="var(--color-ember)"
       >

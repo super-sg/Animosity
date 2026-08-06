@@ -35,6 +35,8 @@ export type Song = {
   /** member slugs who are named on this track */
   players: string[];
   youtubeId?: string;
+  /** the band's own footage on Google Drive — see `SetTrack.drive` */
+  drive?: string;
   isPlaceholderStory: boolean;
 };
 
@@ -66,6 +68,8 @@ export const SONGS: Song[] = [
       "The band's turn inward. Where First and Final points outward at the world, Mental Distortion sits inside the noise the world leaves behind — the loops, the second-guessing, the version of yourself that argues back. Musically it is the most unstable thing in the catalogue, and deliberately so.",
     credits: ["Lyrics — Harsh Roy", "Music & production — Animosity"],
     players: ["harsh-roy"],
+    drive:
+      "https://drive.google.com/file/d/1HtgtbAA8PShCOcUlxcg0jh4j8VbXyy38/view?usp=drive_link",
     isPlaceholderStory: true,
   },
   {
@@ -78,6 +82,8 @@ export const SONGS: Song[] = [
       "The heaviest thing Animosity has written. Riyan wrote the music after joining specifically to push the band into lower tunings and odd time signatures, and this is the proof of that brief — a track about what is left standing after the fight is over, and who pays for it.",
     credits: ["Music — Riyan Gogoi", "Lyrics — Harsh Roy", "Production — Animosity"],
     players: ["riyan-gogoi", "harsh-roy"],
+    drive:
+      "https://drive.google.com/file/d/178fkDlymIxCgNv9zulIxH0x-WMUa3zve/view?usp=drive_link",
     isPlaceholderStory: true,
   },
 ];
@@ -153,6 +159,7 @@ const ORIGINAL_TRACKS: SetTrack[] = SONGS.map((song) => ({
   credits: song.credits,
   spotlight: song.players,
   youtubeId: song.youtubeId,
+  drive: song.drive,
 }));
 
 const ENGLISH_COVERS: SetTrack[] = [
@@ -171,6 +178,8 @@ const ENGLISH_COVERS: SetTrack[] = [
       "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/46/20/cb/4620cb89-d601-98bf-4720-869a384d5f7e/cover.jpg/600x600bb.jpg",
     preview:
       "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/14/e8/18/14e818d5-8b4c-f61b-89b8-66c610481eb4/mzaf_1495383565452300810.plus.aac.p.m4a",
+    drive:
+      "https://drive.google.com/file/d/1loGm19GZVvsrkq4nvpnkyLegxv6ypASu/view?usp=drive_link",
   },
   {
     slug: "hand-of-blood",
@@ -187,6 +196,8 @@ const ENGLISH_COVERS: SetTrack[] = [
       "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f0/75/fc/f075fcfb-312b-4c12-9ff1-2c49473accf6/196874028872.jpg/600x600bb.jpg",
     preview:
       "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/b4/48/dc/b448dce6-fcca-7dc2-19b2-e3dc0f835c97/mzaf_13909177234716827860.plus.aac.p.m4a",
+    drive:
+      "https://drive.google.com/file/d/1X48Kq3oyMKDkZcbq6fkp1xfgXDLA84Q1/view?usp=sharing",
   },
   {
     slug: "tears-dont-fall",
@@ -235,6 +246,24 @@ const ENGLISH_COVERS: SetTrack[] = [
       "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/24/cd/f7/24cdf7d0-279d-316e-a39c-51c35e2cce32/016861747947.jpg/600x600bb.jpg",
     preview:
       "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/78/f9/36/78f936d3-14bb-e6b2-bedf-1478956623f7/mzaf_3831599986626979745.plus.aac.p.m4a",
+  },
+  {
+    slug: "the-trooper",
+    title: "The Trooper",
+    artist: "Iron Maiden",
+    album: "Piece of Mind",
+    year: "1983",
+    accent: "#3B82F6",
+    note: "Steve Harris's gallop under twin lead guitars, with a lyric taken from the Charge of the Light Brigade — Maiden turning a nineteenth-century cavalry disaster into the most recognisable riff in British metal.",
+    angle:
+      "The one cover in the book written for a line-up shaped like this one: three guitars trading the harmony parts while the bass carries the gallop underneath. It is also the most reliable way there is to get a college crowd's fists in the air.",
+    spotlight: ["mathias-oundo", "riyan-gogoi", "shubhra-ghosh", "partho-roy"],
+    artwork:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/f8/cd/38/f8cd3816-a840-209a-e9f6-cf3f3e47da21/0881034134455.jpg/600x600bb.jpg",
+    preview:
+      "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/49/99/81/4999815e-b6f3-7797-61cc-9d8013afe003/mzaf_9926548740505997903.plus.aac.p.m4a",
+    drive:
+      "https://drive.google.com/file/d/1CSo3OkWfuZBbVIGTu_n6SH2YGaU5OQ2t/view?usp=sharing",
   },
   {
     slug: "dream-on",
@@ -371,13 +400,13 @@ export const SETLIST: SetSection[] = [
     title: "Covers",
     accent: "#F97316",
     standfirst:
-      "Twelve songs the band has taken apart and put back together — the ones that built everyone's playing in the first place, plus two in Hindi that only come out when a room asks for them.",
+      "Thirteen songs the band has taken apart and put back together — the ones that built everyone's playing in the first place, plus two in Hindi that only come out when a room asks for them.",
     groups: [
       {
         id: "covers-english",
         label: "English",
         blurb:
-          "The standing set. Metalcore, groove metal, and three rock songs old enough to be nobody's guilty pleasure.",
+          "The standing set. Metalcore, groove metal, classic British metal, and three rock songs old enough to be nobody's guilty pleasure.",
         tracks: ENGLISH_COVERS,
       },
       {

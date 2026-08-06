@@ -145,7 +145,10 @@ function Track({
 
       <Panel id={panelId} open={open}>
         <div className="edge-x grid gap-9 pt-1 pb-12 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-6 lg:col-start-2">
+          {/* Originals carry no sleeve alongside them, so the prose takes the room back. */}
+          <div
+            className={`lg:col-start-2 ${track.artwork ? "lg:col-span-6" : "lg:col-span-8"}`}
+          >
             <p className="label mb-3" style={{ color: track.accent }}>
               {isOriginal ? "The story" : "The song"}
             </p>
